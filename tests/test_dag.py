@@ -1,8 +1,8 @@
 import asyncio
 
-from orchestrator.dag import DAG
-from orchestrator.task import Task
-from orchestrator.scheduler import Scheduler
+from app.orchestrator.dag import DAG
+from app.orchestrator.task import Task
+from app.orchestrator.scheduler import Scheduler
 
 async def market():
     print("Market started")

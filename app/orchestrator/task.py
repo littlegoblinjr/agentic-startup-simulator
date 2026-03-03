@@ -14,14 +14,14 @@ class Task:
 
         self.task_id = task_id
         self.func = func
-        self.dependencies = dependencies
+        self.dependencies = dependencies or []
         self.retries = retries
         self.state = TaskState.PENDING
         self.result = None
         self.error = None
 
 
-    def run(self):
+    async def run(self):
         
         attempt = 0
 
@@ -29,8 +29,10 @@ class Task:
         while attempt < self.retries:
             try:
 
-                self.result = self.func()
+                self.result = await self.func()
                 self.state = TaskState.COMPLETED
+
+                return
             
             except Exception as e:
 
