@@ -27,7 +27,6 @@ async def main():
     dag = build_dag(plan)
 
     scheduler = Scheduler(dag)
-
     await scheduler.execute()
     
 

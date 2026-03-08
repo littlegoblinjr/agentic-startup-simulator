@@ -4,4 +4,4 @@ from typing import Dict, Any
 
 class ToolCall(BaseModel):
     tool_name: str
-    arguments: Dict[str, any]
+    arguments: Dict[str, Any]

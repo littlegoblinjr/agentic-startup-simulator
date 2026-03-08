@@ -32,7 +32,7 @@ class Task:
                 self.result = await self.func()
                 self.state = TaskState.COMPLETED
 
-                return
+                return self.result
             
             except Exception as e:
 
