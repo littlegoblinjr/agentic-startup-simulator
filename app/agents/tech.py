@@ -88,5 +88,9 @@ async def tech_agent(context):
             messages.append({"role": "tool", "content": json.dumps(result)})
 
         except Exception:
+            context["tech_architecture"] = output
 
             return output
+
+
+    

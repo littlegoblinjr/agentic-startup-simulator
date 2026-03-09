@@ -1,10 +1,12 @@
 import asyncio
 from .state import TaskState
 
+
 class Scheduler:
 
-    def __init__(self, dag):
+    def __init__(self, dag, context):
         self.dag = dag
+        self.context = context
 
     async def execute(self):
 
@@ -31,7 +33,7 @@ class Scheduler:
 
 
             
-            results = await asyncio.gather(*[t.run() for t in runnable])
+            results = await asyncio.gather(*[t.run(self.context) for t in runnable])
                     
                     
 

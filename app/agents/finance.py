@@ -1,6 +1,8 @@
 from openai import AsyncOpenAI
-
-
+from app.tools.schemas import ToolCall
+from app.tools.executor import execute_tool
+from typing import List
+import json
 FINANCE_PROMPT = """
 
 You are a startup finance analyst.
@@ -58,11 +60,11 @@ client = AsyncOpenAI(
 async def finance_agent(context):
 
     market_analysis = context["market_analysis"]
-    tech_architecture = context["tech_architecture"]
+    
 
     messages = [
         {"role": "system", "content": FINANCE_PROMPT},
-        {"role": "user", "content": json.dumps(market_analysis) + "\n\n" + json.dumps(tech_architecture)}
+        {"role": "user", "content": json.dumps(market_analysis)}
     ]
 
     for _ in range(5):
@@ -87,5 +89,8 @@ async def finance_agent(context):
             messages.append({"role": "tool", "content": json.dumps(result)})
 
         except Exception:
+            context["financial_plan"] = output
 
             return output
+
+    

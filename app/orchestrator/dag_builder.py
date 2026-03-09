@@ -1,6 +1,10 @@
 from .dag import DAG
 from .task import Task
-
+from app.agents.market import market_agent
+from app.agents.tech import tech_agent
+from app.agents.finance import finance_agent
+from app.agents.pitch import pitch_agent
+from app.agents.planner import Plan
 
 
 AGENT_REGISTRY = {
@@ -23,7 +27,7 @@ async def build_dag(plan: Plan) -> DAG:
         dag.add_task(
 
             Task(
-                task_id = task_id,
+                task_id = task_plan.task_id,
                 func = agent_func,
                 dependencies = task_plan.dependencies
             )

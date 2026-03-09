@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from app.tools.schemas import ToolCall
 from typing import List
 from app.tools.executor import execute_tool
-from json import JSONDecodeError
+
 import json
 
 client = AsyncOpenAI(
@@ -88,7 +88,13 @@ async def market_agent(context):
             messages.append({"role": "assistant", "content": output})
             messages.append({"role": "user", "content": json.dumps(result)})
 
-        except JSONDecodeError:
+        except Exception:
+            context["market_analysis"] = output
             return output
+
+
+    
+
+    
 
         

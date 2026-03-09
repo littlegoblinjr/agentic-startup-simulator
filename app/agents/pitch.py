@@ -1,5 +1,11 @@
 from openai import AsyncOpenAI
 from pydantic import BaseModel
+import json
+
+client = AsyncOpenAI(
+    base_url="http://127.0.0.1:1234/v1",
+    api_key="not-needed"
+)
 
 
 PITCH_PROMPT = """
@@ -61,7 +67,9 @@ async def pitch_agent(context):
         messages = messages,
         response_format = PitchSchema
     )
+    context["pitch"] = response.choices[0].message.parsed
 
     return response.choices[0].message.parsed
+
 
 

@@ -21,7 +21,7 @@ class Task:
         self.error = None
 
 
-    async def run(self):
+    async def run(self, context):
         
         attempt = 0
 
@@ -29,7 +29,7 @@ class Task:
         while attempt < self.retries:
             try:
 
-                self.result = await self.func()
+                self.result = await self.func(context)
                 self.state = TaskState.COMPLETED
 
                 return self.result
