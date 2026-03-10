@@ -25,6 +25,8 @@ Tool call format (JSON only):
   }
 }
 
+
+
 Decision rule:
 
 If financial projections or calculations are required,
@@ -70,7 +72,8 @@ async def finance_agent(context):
     for _ in range(5):
 
         response = await client.chat.completions.create(
-            model="liquid/lfm2.5-1.2b",
+            #model="liquid/lfm2.5-1.2b",
+            model = "qwen2.5-3b-instruct",
             messages=messages
         )
 
@@ -78,19 +81,40 @@ async def finance_agent(context):
 
         try:
 
-            tool_call = ToolCall.model_validate_json(output)
+            data = json.loads(output)
 
-            result = await execute_tool(
-                tool_call.tool_name,
-                tool_call.arguments
-            )
+            if "tool_calls" in data:
 
-            messages.append({"role": "assistant", "content": output})
-            messages.append({"role": "tool", "content": json.dumps(result)})
+                results = []
 
-        except Exception:
-            context["financial_plan"] = output
+                for call in data["tool_calls"]:
 
-            return output
+                    tool_call = ToolCall(**call)
+
+                    result = await execute_tool(
+                        tool_call.tool_name,
+                        tool_call.arguments
+                    )
+
+                    results.append(result)
+
+                messages.append({
+                    "role": "assistant",
+                    "content": output
+                })
+
+                messages.append({
+                    "role": "tool",
+                    "content": json.dumps(results)
+                })
+
+                continue
+
+            context["financial_plan"] = data
+            return data
+
+        except Exception as e:
+            print("FINANCE AGENT ERROR:", e)
+            raise
 
     

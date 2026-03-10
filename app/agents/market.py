@@ -33,6 +33,21 @@ Tool call format (JSON only):
   }
 }
 
+If multiple searches are needed, return them as a list:
+
+{
+  "tool_calls": [
+    {
+      "tool_name": "web_search",
+      "arguments": {"query": "..."}
+    },
+    {
+      "tool_name": "web_search",
+      "arguments": {"query": "..."}
+    }
+  ]
+}
+
 Decision rule:
 
 If the startup idea requires information about competitors, market size, or trends,
@@ -70,27 +85,55 @@ async def market_agent(context):
     for _ in range(5):
 
         response = await client.chat.completions.create(
-            model = "liquid/lfm2.5-1.2b",
+            #model = "liquid/lfm2.5-1.2b",
+            model = "qwen2.5-3b-instruct",
+
             messages = messages
         )
 
         output = response.choices[0].message.content
+        print("Output: ", output)
 
         try:
 
-            tool_call = ToolCall.model_validate_json(output)
-            result = await execute_tool(
+            data = json.loads(output)
+            
 
-                tool_call.tool_name,
-                tool_call.arguments
-            )
+            if "tool_calls" in data:
 
-            messages.append({"role": "assistant", "content": output})
-            messages.append({"role": "user", "content": json.dumps(result)})
+                results = []
+                print("Tool calls: ", data["tool_calls"])
 
-        except Exception:
-            context["market_analysis"] = output
-            return output
+                for call in data["tool_calls"]:
+
+                    tool_call = ToolCall(**call)
+                    print("Calling tool for market: ", tool_call.tool_name)
+                    result = await execute_tool(
+                        tool_call.tool_name,
+                        tool_call.arguments
+                    )
+                    print("Tool result: ", result)
+
+                    results.append(result)
+
+                messages.append({
+                    "role": "assistant",
+                    "content": output
+                })
+
+                messages.append({
+                    "role": "tool",
+                    "content": json.dumps(results)
+                })
+
+                continue
+
+            context["market_analysis"] = data
+            return data
+
+        except Exception as e:
+            print("MARKET AGENT ERROR:", e)
+            raise
 
 
     

@@ -9,7 +9,7 @@ def register_tool(tool: BaseTool):
 
 def get_tool(name: str) -> BaseTool:
 
-    if name not in BaseTool:
+    if name not in TOOL_REGISTRY:
         raise ValueError(f"Tool {name} not found")
 
     return TOOL_REGISTRY[name]

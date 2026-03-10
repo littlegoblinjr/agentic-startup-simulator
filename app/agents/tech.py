@@ -33,6 +33,21 @@ Tool call format (JSON only):
   }
 }
 
+If multiple searches are needed, return them as a list:
+
+{
+  "tool_calls": [
+    {
+      "tool_name": "web_search",
+      "arguments": {"query": "..."}
+    },
+    {
+      "tool_name": "web_search",
+      "arguments": {"query": "..."}
+    }
+  ]
+}
+
 Decision rule:
 
 If the startup idea requires information about technologies, frameworks, or tools,
@@ -69,7 +84,8 @@ async def tech_agent(context):
     for _ in range(5):
 
         response = await client.chat.completions.create(
-            model="liquid/lfm2.5-1.2b",
+            #model="liquid/lfm2.5-1.2b",
+            model = "qwen2.5-3b-instruct",
             messages=messages
         )
 
@@ -77,20 +93,42 @@ async def tech_agent(context):
 
         try:
 
-            tool_call = ToolCall.model_validate_json(output)
+            data = json.loads(output)
 
-            result = await execute_tool(
-                tool_call.tool_name,
-                tool_call.arguments
-            )
+            if "tool_calls" in data:
 
-            messages.append({"role": "assistant", "content": output})
-            messages.append({"role": "tool", "content": json.dumps(result)})
+                results = []
 
-        except Exception:
-            context["tech_architecture"] = output
+                for call in data["tool_calls"]:
 
-            return output
+                    tool_call = ToolCall(**call)
+                    print(  "Calling tool for tech: ", tool_call.tool_name)
+                    result = await execute_tool(
+                        tool_call.tool_name,
+                        tool_call.arguments
+                    )
+                    print("Tool result: ", result)
+
+                    results.append(result)
+
+                messages.append({
+                    "role": "assistant",
+                    "content": output
+                })
+
+                messages.append({
+                    "role": "tool",
+                    "content": json.dumps(results)
+                })
+
+                continue
+
+            context["tech_architecture"] = data
+            return data
+
+        except Exception as e:
+            print("TECH AGENT ERROR:", e)
+            raise
 
 
     

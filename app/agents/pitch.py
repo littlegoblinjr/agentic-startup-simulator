@@ -63,7 +63,8 @@ async def pitch_agent(context):
     ]
     
     response = await client.beta.chat.completions.parse(
-        model = "liquid/lfm2.5-1.2b",
+        #model = "liquid/lfm2.5-1.2b",
+        model = "qwen2.5-3b-instruct",
         messages = messages,
         response_format = PitchSchema
     )

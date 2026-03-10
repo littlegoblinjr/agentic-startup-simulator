@@ -56,7 +56,8 @@ async def create_plan(startup_idea:str) -> Plan:
 
     response = await client.beta.chat.completions.parse(
 
-        model = "liquid/lfm2.5-1.2b",
+        #model = "liquid/lfm2.5-1.2b",
+        model = "qwen/qwen3-4b-thinking-2507",
         messages = [
 
             {"role": "system", "content": PLANNER_PROMPT},

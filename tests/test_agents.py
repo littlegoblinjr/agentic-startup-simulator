@@ -4,12 +4,14 @@ from app.agents.planner import create_plan
 
 from app.orchestrator.dag_builder import build_dag
 from app.orchestrator.scheduler import Scheduler
+from app.tools.web_search import WebSearchTool
+from app.tools.registry import register_tool
 
 async def test_pipeline():
 
     idea = "Ai therapy companion for college students"
 
-    
+    register_tool(WebSearchTool())
     plan = await create_plan(idea)
 
     print("Plan\n")
