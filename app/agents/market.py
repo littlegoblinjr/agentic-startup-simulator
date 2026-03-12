@@ -48,10 +48,40 @@ If multiple searches are needed, return them as a list:
   ]
 }
 
+Research guidelines:
+
+When analyzing the startup idea, research the following areas:
+
+1. Target users
+   - Who will use this product?
+   - Age group, profession, or demographic.
+
+2. Market size
+   - Total market size (TAM, SAM, or estimated demand).
+   - Industry growth trends.
+
+3. Competitors
+   - Existing startups or companies offering similar products.
+   - AI tools, apps, or platforms solving the same problem.
+
+4. Market trends
+   - Emerging trends in the industry.
+   - Technology trends related to the startup idea.
+
+5. Opportunities
+   - Market gaps or underserved users.
+   - Potential partnerships or integrations.
+
+6. Risks
+   - Ethical risks
+   - regulatory risks
+   - technical limitations
+   - market adoption challenges.
+
 Decision rule:
 
-If the startup idea requires information about competitors, market size, or trends,
-you MUST call the web_search tool first before producing the final answer.
+If the startup idea requires information about competitors, market size, or industry trends,
+you MUST call the web_search tool before producing the final answer.
 
 When you have enough information, return the final analysis in JSON using this schema:
 
@@ -66,11 +96,11 @@ When you have enough information, return the final analysis in JSON using this s
 
 Rules:
 
-- Always return valid JSON.
-- Return ONLY JSON. Do not include any extra text.
-- Either return a tool call OR the final market analysis JSON.
-- Never return both.
-
+- Always return valid JSON
+- Return ONLY JSON
+- Do not wrap JSON in markdown or code blocks
+- Either return tool calls OR the final market analysis JSON
+- Never return both
 
 """
 
@@ -112,7 +142,7 @@ async def market_agent(context):
                         tool_call.tool_name,
                         tool_call.arguments
                     )
-                    print("Tool result: ", result)
+                    #print("Tool result: ", result)
 
                     results.append(result)
 
@@ -134,6 +164,19 @@ async def market_agent(context):
         except Exception as e:
             print("MARKET AGENT ERROR:", e)
             raise
+          
+    print("MARKET AGENT: forcing final response")
+
+    response = await client.chat.completions.create(
+        model="qwen2.5-3b-instruct",
+        messages=messages
+    )
+
+    output = response.choices[0].message.content
+    data = json.loads(output)
+
+    context["market_analysis"] = data
+    return data
 
 
     

@@ -107,7 +107,7 @@ async def tech_agent(context):
                         tool_call.tool_name,
                         tool_call.arguments
                     )
-                    print("Tool result: ", result)
+                    #print("Tool result: ", result)
 
                     results.append(result)
 
@@ -129,6 +129,24 @@ async def tech_agent(context):
         except Exception as e:
             print("TECH AGENT ERROR:", e)
             raise
+          
+    print("TECH AGENT: forcing final response")
+
+    response = await client.chat.completions.create(
+        model="qwen2.5-3b-instruct",
+        messages=messages
+    )
+
+    output = response.choices[0].message.content
+    data = json.loads(output)
+
+    context["tech_architecture"] = data
+    return data
+          
+          
+      
+          
+    
 
 
     

@@ -6,12 +6,14 @@ from app.orchestrator.dag_builder import build_dag
 from app.orchestrator.scheduler import Scheduler
 from app.tools.web_search import WebSearchTool
 from app.tools.registry import register_tool
+from app.tools.python_executor import PythonExecutorTool
 
 async def test_pipeline():
 
     idea = "Ai therapy companion for college students"
 
     register_tool(WebSearchTool())
+    register_tool(PythonExecutorTool())
     plan = await create_plan(idea)
 
     print("Plan\n")

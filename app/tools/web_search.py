@@ -1,23 +1,23 @@
 from .base import BaseTool
 from .registry import register_tool
-from duckduckgo_search import DDGS
+from tavily import TavilyClient
 
 class WebSearchTool(BaseTool):
 
 
     name = "web_search"
     description = "Search the web for information"
-
+    client = TavilyClient(r"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")
     async def execute(self, query: str):
 
         results = []
         print("Searching the web for: ", query)
-        with DDGS() as ddgs:
-            search_results = ddgs.text(query, max_results = 10, region="us-en")
-            print("Search results: ", search_results)
-            for r in search_results:
+            
+        search_results = self.client.search(query, search_depth="advanced", max_results=5)
+        #print("Search results: ", search_results)
+        for r in search_results["results"]:
                 results.append(
-                    f"{r['title']} - {r['href']}\n{r['body']}"
+                    f"{r['title']} - {r['url']}\n{r['content']}"
                 )
 
 
