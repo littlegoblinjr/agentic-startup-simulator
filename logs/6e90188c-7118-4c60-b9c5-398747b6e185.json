@@ -1,0 +1,1225 @@
+{
+  "run_id": "6e90188c-7118-4c60-b9c5-398747b6e185",
+  "idea": "AI Therapy app for students in India",
+  "start_time": "2026-03-19T21:45:36.336922",
+  "end_time": "2026-03-19T21:47:55.822579",
+  "total_events": 46,
+  "total_cost_usd": "$0.006177",
+  "events": [
+    {
+      "timestamp": "2026-03-19T21:45:36.336922",
+      "agent_type": "planner",
+      "event_type": "generate_plan_start",
+      "step": null,
+      "data": {
+        "idea": "AI Therapy app for students in India"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:45:41.256851",
+      "agent_type": "planner",
+      "event_type": "generate_plan_success",
+      "step": null,
+      "data": {
+        "plan": {
+          "tasks": [
+            {
+              "task_id": "TASK_1",
+              "agent_type": "market_agent",
+              "dependencies": []
+            },
+            {
+              "task_id": "TASK_2",
+              "agent_type": "tech_agent",
+              "dependencies": [
+                "TASK_1"
+              ]
+            },
+            {
+              "task_id": "TASK_3",
+              "agent_type": "finance_agent",
+              "dependencies": [
+                "TASK_1"
+              ]
+            },
+            {
+              "task_id": "TASK_4",
+              "agent_type": "synthesis_agent",
+              "dependencies": [
+                "TASK_1",
+                "TASK_2",
+                "TASK_3"
+              ]
+            },
+            {
+              "task_id": "TASK_5",
+              "agent_type": "pitch_agent",
+              "dependencies": [
+                "TASK_4"
+              ]
+            },
+            {
+              "task_id": "TASK_6",
+              "agent_type": "evaluation_agent",
+              "dependencies": [
+                "TASK_5"
+              ]
+            }
+          ]
+        }
+      },
+      "usage": {
+        "completion_tokens": 208,
+        "prompt_tokens": 442,
+        "total_tokens": 650,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00019109999999999998
+    },
+    {
+      "timestamp": "2026-03-19T21:45:41.258357",
+      "agent_type": "critic",
+      "event_type": "review_plan_start",
+      "step": null,
+      "data": {
+        "idea": "AI Therapy app for students in India"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:45:43.692149",
+      "agent_type": "critic",
+      "event_type": "review_plan_success",
+      "step": null,
+      "data": {
+        "result": {
+          "valid": false,
+          "issues": "The workflow is incomplete and does not specify the order of operations for the agents involved in the startup plan.",
+          "suggested_fix": "Ensure to specify the execution order as follows: first market_agent, followed by tech_agent, finance_agent, and finally pitch_agent. Each agent must fulfill its dependency on market_agent and the pitch_agent must fulfill its dependencies on tech_agent and finance_agent."
+        }
+      },
+      "usage": {
+        "completion_tokens": 83,
+        "prompt_tokens": 260,
+        "total_tokens": 343,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 8.879999999999999e-05
+    },
+    {
+      "timestamp": "2026-03-19T21:45:43.693126",
+      "agent_type": "planner",
+      "event_type": "generate_plan_start",
+      "step": null,
+      "data": {
+        "idea": "Fix this plan based on issues: The workflow is incomplete and does not specify the order of operations for the agents involved in the startup plan.. Suggested fix: Ensure to specify the execution order as follows: first market_agent, followed by tech_agent, finance_agent, and finally pitch_agent. Each agent must fulfill its dependency on market_agent and the pitch_agent must fulfill its dependencies on tech_agent and finance_agent.. Original plan: tasks=[TaskPlan(task_id='TASK_1', agent_type=<AgentType.market_agent: 'market_agent'>, dependencies=[]), TaskPlan(task_id='TASK_2', agent_type=<AgentType.tech_agent: 'tech_agent'>, dependencies=['TASK_1']), TaskPlan(task_id='TASK_3', agent_type=<AgentType.finance_agent: 'finance_agent'>, dependencies=['TASK_1']), TaskPlan(task_id='TASK_4', agent_type=<AgentType.synthesis_agent: 'synthesis_agent'>, dependencies=['TASK_1', 'TASK_2', 'TASK_3']), TaskPlan(task_id='TASK_5', agent_type=<AgentType.pitch_agent: 'pitch_agent'>, dependencies=['TASK_4']), TaskPlan(task_id='TASK_6', agent_type=<AgentType.evaluation_agent: 'evaluation_agent'>, dependencies=['TASK_5'])]"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:45:47.297752",
+      "agent_type": "planner",
+      "event_type": "generate_plan_success",
+      "step": null,
+      "data": {
+        "plan": {
+          "tasks": [
+            {
+              "task_id": "TASK_1",
+              "agent_type": "market_agent",
+              "dependencies": []
+            },
+            {
+              "task_id": "TASK_2",
+              "agent_type": "tech_agent",
+              "dependencies": [
+                "TASK_1"
+              ]
+            },
+            {
+              "task_id": "TASK_3",
+              "agent_type": "finance_agent",
+              "dependencies": [
+                "TASK_1"
+              ]
+            },
+            {
+              "task_id": "TASK_4",
+              "agent_type": "synthesis_agent",
+              "dependencies": [
+                "TASK_2",
+                "TASK_3"
+              ]
+            },
+            {
+              "task_id": "TASK_5",
+              "agent_type": "pitch_agent",
+              "dependencies": [
+                "TASK_4"
+              ]
+            },
+            {
+              "task_id": "TASK_6",
+              "agent_type": "evaluation_agent",
+              "dependencies": [
+                "TASK_5"
+              ]
+            }
+          ]
+        }
+      },
+      "usage": {
+        "completion_tokens": 126,
+        "prompt_tokens": 700,
+        "total_tokens": 826,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0001806
+    },
+    {
+      "timestamp": "2026-03-19T21:45:47.303448",
+      "agent_type": "market_agent",
+      "event_type": "start",
+      "step": null,
+      "data": {
+        "idea": "AI Therapy app for students in India"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:45:48.735045",
+      "agent_type": "market_agent",
+      "event_type": "generate_queries",
+      "step": null,
+      "data": {
+        "queries": [
+          "AI therapy competitors in India",
+          "Market size for mental health apps",
+          "Trends in student mental health solutions",
+          "Examples of successful therapy startups",
+          "Similar apps to AI therapy for students"
+        ]
+      },
+      "usage": {
+        "completion_tokens": 39,
+        "prompt_tokens": 97,
+        "total_tokens": 136,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 3.795e-05
+    },
+    {
+      "timestamp": "2026-03-19T21:45:55.637885",
+      "agent_type": "market_agent",
+      "event_type": "round_0_output",
+      "step": null,
+      "data": {
+        "output": "{\n  \"tool_calls\": [\n    {\n      \"tool_name\": \"web_search\",\n      \"arguments\": {\"query\": \"AI therapy ..."
+      },
+      "usage": {
+        "completion_tokens": 44,
+        "prompt_tokens": 273,
+        "total_tokens": 317,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 6.735e-05
+    },
+    {
+      "timestamp": "2026-03-19T21:45:55.638809",
+      "agent_type": "market_agent",
+      "event_type": "tool_call",
+      "step": null,
+      "data": {
+        "tool": "web_search",
+        "query": "AI therapy app for students in India market analysis demographics competitors trends"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:46:00.519496",
+      "agent_type": "market_agent",
+      "event_type": "refined_query",
+      "step": null,
+      "data": {
+        "query": "competitive analysis of AI therapy applications for college students"
+      },
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 2214,
+        "total_tokens": 2242,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 2176
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0003488999999999999
+    },
+    {
+      "timestamp": "2026-03-19T21:46:07.768368",
+      "agent_type": "market_agent",
+      "event_type": "refined_query",
+      "step": null,
+      "data": {
+        "query": "impact of AI therapy on student mental health outcomes during remote learning scenarios"
+      },
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 2214,
+        "total_tokens": 2242,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 2176
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0003488999999999999
+    },
+    {
+      "timestamp": "2026-03-19T21:46:11.872526",
+      "agent_type": "market_agent",
+      "event_type": "batch_summarize_success",
+      "step": null,
+      "data": {
+        "summary": "- The AI therapy market in India is expected to re"
+      },
+      "usage": {
+        "completion_tokens": 163,
+        "prompt_tokens": 486,
+        "total_tokens": 649,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0001707
+    },
+    {
+      "timestamp": "2026-03-19T21:46:16.581721",
+      "agent_type": "market_agent",
+      "event_type": "batch_summarize_success",
+      "step": null,
+      "data": {
+        "summary": "- The AI therapy market for mental health is proje"
+      },
+      "usage": {
+        "completion_tokens": 178,
+        "prompt_tokens": 573,
+        "total_tokens": 751,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00019275
+    },
+    {
+      "timestamp": "2026-03-19T21:46:23.342173",
+      "agent_type": "market_agent",
+      "event_type": "batch_summarize_success",
+      "step": null,
+      "data": {
+        "summary": "- **Growing Market Size**: Nearly 40% of college s"
+      },
+      "usage": {
+        "completion_tokens": 171,
+        "prompt_tokens": 577,
+        "total_tokens": 748,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00018915000000000002
+    },
+    {
+      "timestamp": "2026-03-19T21:46:27.949133",
+      "agent_type": "market_agent",
+      "event_type": "batch_summarize_success",
+      "step": null,
+      "data": {
+        "summary": "- **Market Size**: The demand for AI therapy apps "
+      },
+      "usage": {
+        "completion_tokens": 153,
+        "prompt_tokens": 706,
+        "total_tokens": 859,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00019769999999999998
+    },
+    {
+      "timestamp": "2026-03-19T21:46:27.949133",
+      "agent_type": "market_agent",
+      "event_type": "consolidated_findings_update",
+      "step": null,
+      "data": {
+        "summary_count": 4
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:46:29.389361",
+      "agent_type": "market_agent",
+      "event_type": "round_1_output",
+      "step": null,
+      "data": {
+        "output": "{\n  \"tool_calls\": [\n    {\n      \"tool_name\": \"web_search\",\n      \"arguments\": {\"query\": \"AI therapy ..."
+      },
+      "usage": {
+        "completion_tokens": 42,
+        "prompt_tokens": 945,
+        "total_tokens": 987,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00016695
+    },
+    {
+      "timestamp": "2026-03-19T21:46:29.389361",
+      "agent_type": "market_agent",
+      "event_type": "tool_call",
+      "step": null,
+      "data": {
+        "tool": "web_search",
+        "query": "AI therapy app market analysis students India 2024"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:46:33.678754",
+      "agent_type": "market_agent",
+      "event_type": "batch_summarize_success",
+      "step": null,
+      "data": {
+        "summary": "- The AI therapy app market in India is projected "
+      },
+      "usage": {
+        "completion_tokens": 141,
+        "prompt_tokens": 486,
+        "total_tokens": 627,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0001575
+    },
+    {
+      "timestamp": "2026-03-19T21:46:40.664171",
+      "agent_type": "market_agent",
+      "event_type": "batch_summarize_success",
+      "step": null,
+      "data": {
+        "summary": "- **Market Opportunity**: The AI therapy software "
+      },
+      "usage": {
+        "completion_tokens": 206,
+        "prompt_tokens": 540,
+        "total_tokens": 746,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00020459999999999999
+    },
+    {
+      "timestamp": "2026-03-19T21:46:40.664171",
+      "agent_type": "market_agent",
+      "event_type": "consolidated_findings_update",
+      "step": null,
+      "data": {
+        "summary_count": 6
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:46:42.285252",
+      "agent_type": "market_agent",
+      "event_type": "round_2_output",
+      "step": null,
+      "data": {
+        "output": "{\n  \"tool_calls\": [\n    {\n      \"tool_name\": \"web_search\",\n      \"arguments\": {\"query\": \"AI therapy ..."
+      },
+      "usage": {
+        "completion_tokens": 44,
+        "prompt_tokens": 1129,
+        "total_tokens": 1173,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00019575
+    },
+    {
+      "timestamp": "2026-03-19T21:46:42.285252",
+      "agent_type": "market_agent",
+      "event_type": "tool_call",
+      "step": null,
+      "data": {
+        "tool": "web_search",
+        "query": "AI therapy apps for students in India market analysis 2024"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:46:46.721692",
+      "agent_type": "market_agent",
+      "event_type": "batch_summarize_success",
+      "step": null,
+      "data": {
+        "summary": "- The AI therapy app market in India is projected "
+      },
+      "usage": {
+        "completion_tokens": 140,
+        "prompt_tokens": 486,
+        "total_tokens": 626,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0001569
+    },
+    {
+      "timestamp": "2026-03-19T21:46:53.037140",
+      "agent_type": "market_agent",
+      "event_type": "batch_summarize_success",
+      "step": null,
+      "data": {
+        "summary": "- **Market Size**: The AI in mental health softwar"
+      },
+      "usage": {
+        "completion_tokens": 218,
+        "prompt_tokens": 540,
+        "total_tokens": 758,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0002118
+    },
+    {
+      "timestamp": "2026-03-19T21:46:53.039865",
+      "agent_type": "market_agent",
+      "event_type": "consolidated_findings_update",
+      "step": null,
+      "data": {
+        "summary_count": 8
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:47:00.105804",
+      "agent_type": "market_agent",
+      "event_type": "final_forcing_success",
+      "step": null,
+      "data": {
+        "analysis": {
+          "target_audience": "Students in higher education in India, particularly those experiencing mental health issues such as anxiety and stress related to academic performance.",
+          "market_size": "The AI therapy app market in India is projected to grow to USD 1,041.3 million over the next decade, driven by increasing awareness of mental health issues and the demand for personalized mental health solutions among students.",
+          "competitors": [
+            "Fortis Healthcare",
+            "Woebot",
+            "Headspace",
+            "Talkspace",
+            "Wysa",
+            "YourDOST"
+          ],
+          "market_trends": [
+            "Increasing integration of AI in educational tools for mental health support.",
+            "Growing demand for personalization in mental health therapy applications.",
+            "Strategic collaborations between AI providers and healthcare organizations.",
+            "Rise in mental health awareness driven by social media influence.",
+            "Expanding accessibility to mental health resources through technology."
+          ],
+          "opportunities": [
+            "Developing targeted AI therapy solutions for specific mental health issues affecting students.",
+            "Leveraging government initiatives promoting digital health for wider adoption.",
+            "Integrating machine learning and natural language processing for better user engagement.",
+            "Creating partnerships with educational institutions to facilitate access to mental health resources.",
+            "Exploring research gaps to innovate and improve AI therapy mechanisms for student populations."
+          ],
+          "risks": [
+            "Regulatory complexities surrounding the deployment of AI in mental health services.",
+            "Technical challenges related to the integration and reliability of AI technologies in therapy applications.",
+            "High competition from established mental health apps and healthcare providers.",
+            "Potential backlash related to privacy concerns and data security in handling user information.",
+            "Dependence on internet and smartphone accessibility, which may be limited in rural areas."
+          ]
+        }
+      },
+      "usage": {
+        "completion_tokens": 366,
+        "prompt_tokens": 1142,
+        "total_tokens": 1508,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0003909
+    },
+    {
+      "timestamp": "2026-03-19T21:47:00.105804",
+      "agent_type": "tech_agent",
+      "event_type": "start",
+      "step": null,
+      "data": {
+        "idea": "AI Therapy app for students in India"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:47:00.113012",
+      "agent_type": "finance_agent",
+      "event_type": "start",
+      "step": null,
+      "data": {
+        "idea": "AI Therapy app for students in India"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:47:01.236748",
+      "agent_type": "tech_agent",
+      "event_type": "generate_queries",
+      "step": null,
+      "data": {
+        "queries": [
+          "impact of AI therapy on student mental health",
+          "AI mental health apps effectiveness in India",
+          "design principles for AI therapy applications"
+        ]
+      },
+      "usage": {
+        "completion_tokens": 28,
+        "prompt_tokens": 84,
+        "total_tokens": 112,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 2.9399999999999996e-05
+    },
+    {
+      "timestamp": "2026-03-19T21:47:01.443365",
+      "agent_type": "finance_agent",
+      "event_type": "generate_queries",
+      "step": null,
+      "data": {
+        "queries": [
+          "best budgeting apps for students",
+          "how to save money in college",
+          "financial planning tips for students"
+        ]
+      },
+      "usage": {
+        "completion_tokens": 23,
+        "prompt_tokens": 80,
+        "total_tokens": 103,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 2.58e-05
+    },
+    {
+      "timestamp": "2026-03-19T21:47:14.336978",
+      "agent_type": "finance_agent",
+      "event_type": "round_0_output",
+      "step": null,
+      "data": {
+        "output": "{\n  \"revenue_model\": \"The primary revenue model for the AI therapy app will be subscription-based, o..."
+      },
+      "usage": {
+        "completion_tokens": 360,
+        "prompt_tokens": 471,
+        "total_tokens": 831,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00028665
+    },
+    {
+      "timestamp": "2026-03-19T21:47:14.336978",
+      "agent_type": "finance_agent",
+      "event_type": "success",
+      "step": null,
+      "data": {
+        "plan": {
+          "revenue_model": "The primary revenue model for the AI therapy app will be subscription-based, offering tiered pricing options such as a basic free tier with limited features, a standard tier with full access to therapy sessions at INR 499/month, and a premium tier including personalized therapy plans and live chat support at INR 999/month. Additional revenue may come from partnerships with educational institutions and government initiatives.",
+          "pricing_strategy": "The pricing strategy will involve competitive pricing aligned with market rates for mental health services, focusing on affordability for students. Promotional discounts and referral incentives will be implemented to boost sign-ups. A freemium model will encourage users to upgrade to paid subscriptions after initial engagement.",
+          "cost_structure": "Initial costs will include app development (estimated at INR 5 million), ongoing operational costs (INR 200,000/month for server maintenance, customer support, and marketing), and user acquisition costs (INR 100 per user). Variable costs will include content creation for therapy sessions and partnerships with mental health professionals for credibility, estimated to be around INR 1,000,000 annually.",
+          "break_even_estimate": "Based on our cost structure and the pricing strategy, the break-even point is estimated to occur after acquiring approximately 3,500 paid subscribers, which could be achieved within the first year with aggressive marketing and partnerships. This calculation assumes a blended revenue of around INR 700 per subscriber after discounts.",
+          "financial_projection": "In the first year, projections estimate revenues of approximately INR 10 million from subscriptions and partnerships, with a growth rate of 20% per year based on increased user adoption and expanded offerings. By the end of year three, revenue is expected to exceed INR 30 million, assuming successful scaling and market penetration."
+        }
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:47:15.669480",
+      "agent_type": "tech_agent",
+      "event_type": "round_0_output",
+      "step": null,
+      "data": {
+        "output": "{\n  \"architecture\": \"A scalable AI-based therapy application designed to provide mental health suppo..."
+      },
+      "usage": {
+        "completion_tokens": 247,
+        "prompt_tokens": 472,
+        "total_tokens": 719,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.000219
+    },
+    {
+      "timestamp": "2026-03-19T21:47:15.669480",
+      "agent_type": "tech_agent",
+      "event_type": "success",
+      "step": null,
+      "data": {
+        "architecture": {
+          "architecture": "A scalable AI-based therapy application designed to provide mental health support specifically targeted at students in higher education. The application will utilize machine learning and natural language processing to deliver personalized therapy experiences using chatbots and virtual therapists.",
+          "tech_stack": [
+            "React Native",
+            "Node.js",
+            "TensorFlow",
+            "MongoDB",
+            "AWS"
+          ],
+          "database": "A NoSQL database (MongoDB) to store users' profiles, interaction history, and session data, ensuring flexibility and scalability for handling varied user schemas.",
+          "deployment": "The application will be deployed on AWS, utilizing services such as EC2 for computing power, S3 for storage, and RDS for database management, as well as ECS for container orchestration to manage microservices efficiently.",
+          "scalability": "The architecture will leverage microservices to allow independent scaling of different application components (like user authentication, therapy sessions, and analytics), utilizing cloud services to spin up additional resources as user demand grows.",
+          "security": "Implementing end-to-end encryption for data in transit and at rest, alongside strict authentication protocols (OAuth2) and regular security audits to comply with data protection regulations, ensuring user privacy and trust."
+        }
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:47:15.669480",
+      "agent_type": "synthesis_agent",
+      "event_type": "round_1_start",
+      "step": null,
+      "data": {
+        "data_summary": "Initial inputs"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:47:21.605464",
+      "agent_type": "synthesis_agent",
+      "event_type": "round_1_success",
+      "step": null,
+      "data": {
+        "result_summary": "synthesis completed"
+      },
+      "usage": {
+        "completion_tokens": 285,
+        "prompt_tokens": 1237,
+        "total_tokens": 1522,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00035654999999999997
+    },
+    {
+      "timestamp": "2026-03-19T21:47:21.614023",
+      "agent_type": "synthesis_agent",
+      "event_type": "refine_finance_start",
+      "step": null,
+      "data": {
+        "issues": [
+          "The financial projections assume aggressive user acquisition and growth rates that may not align with the competitive market landscape and existing user behavior patterns.",
+          "The operational costs do not consider potential fluctuations in user acquisition costs that can arise from marketing initiatives, particularly in a saturated market."
+        ]
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:47:32.666775",
+      "agent_type": "synthesis_agent",
+      "event_type": "refine_finance_success",
+      "step": null,
+      "data": {
+        "refined_summary": "finance refined"
+      },
+      "usage": {
+        "completion_tokens": 473,
+        "prompt_tokens": 867,
+        "total_tokens": 1340,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00041385
+    },
+    {
+      "timestamp": "2026-03-19T21:47:32.667688",
+      "agent_type": "synthesis_agent",
+      "event_type": "round_2_start",
+      "step": null,
+      "data": {
+        "data_summary": "Initial inputs"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:47:41.470828",
+      "agent_type": "synthesis_agent",
+      "event_type": "round_2_success",
+      "step": null,
+      "data": {
+        "result_summary": "synthesis completed"
+      },
+      "usage": {
+        "completion_tokens": 310,
+        "prompt_tokens": 1350,
+        "total_tokens": 1660,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0003885
+    },
+    {
+      "timestamp": "2026-03-19T21:47:41.470828",
+      "agent_type": "pitch_agent",
+      "event_type": "generate_pitch_start",
+      "step": null,
+      "data": {
+        "input_summary": "Context provided"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:47:51.625940",
+      "agent_type": "pitch_agent",
+      "event_type": "final_pitch",
+      "step": null,
+      "data": {
+        "pitch_summary": "pitch generated"
+      },
+      "usage": {
+        "completion_tokens": 406,
+        "prompt_tokens": 1639,
+        "total_tokens": 2045,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.00048945
+    },
+    {
+      "timestamp": "2026-03-19T21:47:51.626444",
+      "agent_type": "evaluation_agent",
+      "event_type": "evaluation_start",
+      "step": null,
+      "data": {
+        "summary": "Evaluating final output"
+      },
+      "usage": null,
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0
+    },
+    {
+      "timestamp": "2026-03-19T21:47:55.821561",
+      "agent_type": "evaluation_agent",
+      "event_type": "final_scorecard",
+      "step": null,
+      "data": {
+        "scorecard": "evaluation completed"
+      },
+      "usage": {
+        "completion_tokens": 197,
+        "prompt_tokens": 2340,
+        "total_tokens": 2537,
+        "completion_tokens_details": {
+          "accepted_prediction_tokens": 0,
+          "audio_tokens": 0,
+          "reasoning_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "audio_tokens": 0,
+          "cached_tokens": 0
+        }
+      },
+      "model": "gpt-4o-mini",
+      "cost_usd": 0.0004692
+    }
+  ],
+  "final_context": {
+    "idea": "AI Therapy app for students in India",
+    "run_id": "6e90188c-7118-4c60-b9c5-398747b6e185",
+    "market_analysis": {
+      "target_audience": "Students in higher education in India, particularly those experiencing mental health issues such as anxiety and stress related to academic performance.",
+      "market_size": "The AI therapy app market in India is projected to grow to USD 1,041.3 million over the next decade, driven by increasing awareness of mental health issues and the demand for personalized mental health solutions among students.",
+      "competitors": [
+        "Fortis Healthcare",
+        "Woebot",
+        "Headspace",
+        "Talkspace",
+        "Wysa",
+        "YourDOST"
+      ],
+      "market_trends": [
+        "Increasing integration of AI in educational tools for mental health support.",
+        "Growing demand for personalization in mental health therapy applications.",
+        "Strategic collaborations between AI providers and healthcare organizations.",
+        "Rise in mental health awareness driven by social media influence.",
+        "Expanding accessibility to mental health resources through technology."
+      ],
+      "opportunities": [
+        "Developing targeted AI therapy solutions for specific mental health issues affecting students.",
+        "Leveraging government initiatives promoting digital health for wider adoption.",
+        "Integrating machine learning and natural language processing for better user engagement.",
+        "Creating partnerships with educational institutions to facilitate access to mental health resources.",
+        "Exploring research gaps to innovate and improve AI therapy mechanisms for student populations."
+      ],
+      "risks": [
+        "Regulatory complexities surrounding the deployment of AI in mental health services.",
+        "Technical challenges related to the integration and reliability of AI technologies in therapy applications.",
+        "High competition from established mental health apps and healthcare providers.",
+        "Potential backlash related to privacy concerns and data security in handling user information.",
+        "Dependence on internet and smartphone accessibility, which may be limited in rural areas."
+      ]
+    },
+    "financial_plan": {
+      "revenue_model": "The primary revenue model for the AI therapy app will remain subscription-based, offering tiered pricing options, including a basic free tier with limited features, a standard tier with full access to therapy sessions at INR 499/month, and a premium tier featuring personalized therapy plans and live chat support at INR 999/month. Additional revenue will be pursued through partnerships with educational institutions and government initiatives, with a stronger emphasis on research collaborations to enhance our credibility and broaden our market presence.",
+      "pricing_strategy": "The pricing strategy will be adjusted to include a more dynamic pricing approach that responds to market conditions, such as introducing time-limited promotions during peak academic stress periods. We will maintain competitive pricing aligned with market rates for mental health services while ensuring affordability for students. A freemium model will continue to be used, but with increased efforts to provide measurable outcomes for users, which may further incentivize upgrades to paid subscriptions.",
+      "cost_structure": "Initial costs will still consist of app development (estimated at INR 5 million), ongoing operational costs (INR 250,000/month for server maintenance, customer support, and marketing), and user acquisition costs that will be estimated based on a percentage of marketing spend rather than a fixed cost per user, accommodating potential fluctuations in user acquisition costs. Variable costs will remain for content creation and partnerships with mental health professionals, estimated to be around INR 1,200,000 annually, allowing for flexibility in adjusting to market demands.",
+      "break_even_estimate": "The revised break-even point is estimated to be around 4,500 paid subscribers, reflecting more conservative user acquisition projections in light of competitive pressures. This could still be achievable within the first two years of operation, leveraging targeted marketing strategies and robust educational partnerships. The calculation assumes a revised blended revenue of approximately INR 650 per subscriber after discounts, improving feasibility while maintaining growth.",
+      "financial_projection": "In the first year, revised projections estimate revenues of approximately INR 8 million from subscriptions and partnerships, taking into account a more conservative initial user acquisition rate. A more realistic annual growth rate of 15% per year will be applied, based on a gradual increase in user adoption and expanded offerings. By the end of year three, revenue is expected to exceed INR 20 million, reflecting sustainable scaling and thoughtful market engagement."
+    },
+    "tech_architecture": {
+      "architecture": "A scalable AI-based therapy application designed to provide mental health support specifically targeted at students in higher education. The application will utilize machine learning and natural language processing to deliver personalized therapy experiences using chatbots and virtual therapists.",
+      "tech_stack": [
+        "React Native",
+        "Node.js",
+        "TensorFlow",
+        "MongoDB",
+        "AWS"
+      ],
+      "database": "A NoSQL database (MongoDB) to store users' profiles, interaction history, and session data, ensuring flexibility and scalability for handling varied user schemas.",
+      "deployment": "The application will be deployed on AWS, utilizing services such as EC2 for computing power, S3 for storage, and RDS for database management, as well as ECS for container orchestration to manage microservices efficiently.",
+      "scalability": "The architecture will leverage microservices to allow independent scaling of different application components (like user authentication, therapy sessions, and analytics), utilizing cloud services to spin up additional resources as user demand grows.",
+      "security": "Implementing end-to-end encryption for data in transit and at rest, alongside strict authentication protocols (OAuth2) and regular security audits to comply with data protection regulations, ensuring user privacy and trust."
+    },
+    "synthesis": {
+      "consistency_issues": [
+        "Pricing tiers do not align with potential customer income levels in India, making it unrealistic for the target users.",
+        "Market size projections seem overly optimistic given the high competition and the current penetration of similar AI services.",
+        "Financial projections indicate a rapid growth rate that may not align with the competitive landscape and user acquisition challenges identified."
+      ],
+      "gaps": [
+        "Insufficient detail on how to mitigate regulatory complexities that could impede app deployment.",
+        "Lack of comprehensive analysis on user acquisition strategies specific to the Indian market.",
+        "No mention of potential barriers to internet access that could affect user engagement, particularly in rural areas."
+      ],
+      "refined_strategy": "To position the AI therapy app as a leader in the mental health sector for Indian students, we will foster strategic partnerships with educational institutions while adopting a tiered pricing model that reflects the financial reality of our target audience. Focused marketing during peak academic stress periods will be critical, alongside ensuring rigorous compliance with regulatory frameworks to build trust. We will prioritize addressing data privacy concerns and accessibility challenges to enhance user engagement and retention.",
+      "key_risks": [
+        "Regulatory changes that may impose additional compliance costs or operational challenges.",
+        "User attrition due to dissatisfaction with AI effectiveness compared to human therapists."
+      ],
+      "recommendations": [
+        "Conduct a market validation study to reassess pricing strategies based on user feedback and willingness to pay.",
+        "Develop a comprehensive marketing strategy that addresses specific barriers to entry for students in rural areas, including partnerships with local organizations for outreach."
+      ]
+    },
+    "pitch": {
+      "startup_name": "MindMend",
+      "problem": "Students in higher education in India often face severe mental health challenges, such as anxiety and stress related to academic performance, yet access to affordable and effective mental health support remains limited.",
+      "solution": "MindMend provides a scalable AI-powered therapy application offering personalized mental health support to students through chatbots and virtual therapists, designed to effectively address their unique challenges and enhance their academic performance.",
+      "target_market": "The primary target market consists of students in higher education in India, particularly those experiencing mental health issues like anxiety and stress. This demographic represents an increasing awareness of mental health alongside a growing demand for personalized support solutions.",
+      "product": "Our product is a mobile application that leverages machine learning and natural language processing to offer targeted therapy sessions tailored to individual needs, with features like real-time chat support and progress tracking for students.",
+      "business_model": "MindMend operates on a subscription-based revenue model with a freemium tier, including a basic free version and monthly subscription options (INR 499 for standard and INR 999 for premium). Partnerships with educational institutions and government support initiatives will supplement revenues.",
+      "technology": "The application utilizes a robust tech stack including React Native for front-end, Node.js for server-side, TensorFlow for AI algorithms, and MongoDB for a flexible NoSQL database, hosted on AWS for scalability and security.",
+      "go_to_market": "Our go-to-market strategy focuses on strategic partnerships with educational institutions, targeted marketing during peak academic stress periods, and tailored outreach programs to improve accessibility in both urban and rural settings.",
+      "financial_projection": "In the first year, we target revenues of INR 8 million from subscriptions and partnerships, with an estimated 15% annual growth rate subsequently. By year three, we anticipate exceeding INR 20 million in revenue through sustainable scaling efforts and focused market engagement.",
+      "vision": "MindMend envisions becoming the leading mental health support platform for students in India by providing access to effective, personalized, and affordable AI-based therapy solutions, ultimately improving student well-being and academic success."
+    },
+    "evaluation_scorecard": {
+      "total_score": 78,
+      "criteria_scores": {
+        "consistency": 18,
+        "completeness": 20,
+        "realism": 21,
+        "risk_mitigation": 19
+      },
+      "feedback": {
+        "strengths": [
+          "Strong alignment of the problem addressed with the target market of students in India.",
+          "Comprehensive tech stack and architecture that leverages modern AI technologies, allowing for scalability and personalized user experiences."
+        ],
+        "weaknesses": [
+          "Financial projections appear overly optimistic relative to the competitive landscape and market saturation.",
+          "Gaps in the strategy section address key risk factors like regulatory hurdles and user acquisition but lack detailed mitigation plans."
+        ],
+        "investor_verdict": "While MindMend shows promise in addressing critical mental health needs for students in India, the business model and financial projections require more realistic adjustments to enhance investability."
+      }
+    }
+  },
+  "final_context_summary": {
+    "idea": "AI Therapy app for students in India",
+    "run_id": "6e90188c-7118-4c60-b9c5-398747b6e185",
+    "market_analysis": "<6 items/keys>",
+    "financial_plan": "<5 items/keys>",
+    "tech_architecture": "<6 items/keys>",
+    "synthesis": "<5 items/keys>",
+    "pitch": "<10 items/keys>",
+    "evaluation_scorecard": "<3 items/keys>"
+  }
+}
