@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+openai
+tavily-python
+trafilatura
+asyncpg
+pydantic
+python-dotenv
+sentence-transformers
+numpy
+httpx
+pydantic-settings

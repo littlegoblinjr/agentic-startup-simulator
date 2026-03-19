@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import os
 
 from app.api.routes import router as api_router
@@ -40,11 +42,21 @@ if not os.path.exists("logs"):
 # Include routes
 app.include_router(api_router, prefix="/api")
 
-@app.get("/")
+@app.get("/api/health")
 async def root():
     return {"message": "AI Startup Simulator API is running"}
+
+# Serve Frontend Static Files
+# Note: 'static' folder is created by the Docker build stage
+if os.path.exists("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
+    @app.exception_handler(404)
+    async def not_found(request, exc):
+        return FileResponse("static/index.html")
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app.main:app", host="0.0.0.0", port=1234, reload=True)
+    port = int(os.getenv("PORT", 7860))
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=False)

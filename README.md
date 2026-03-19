@@ -1,3 +1,12 @@
+---
+title: AI Startup Simulator
+emoji: 🚀
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # 🚀 AI Startup Simulator: Swarm-Powered Venture Validation
 
 **AI Startup Simulator** is an advanced multi-agent orchestrator designed to stress-test, validate, and build comprehensive strategies for new startup ideas in real-time. By deploying a swarm of 8 specialized AI researchers, the simulator provides deep market analysis, technical architecture, and financial feasibility reports in minutes.
