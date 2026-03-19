@@ -10,3 +10,4 @@ sentence-transformers
 numpy
 httpx
 pydantic-settings
+json-repair
