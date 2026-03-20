@@ -34,6 +34,7 @@ const App = () => {
     const [intelModal, setIntelModal] = useState(null);
     const [selectedCard, setSelectedCard] = useState(null);
     const [error, setError] = useState(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const intelData = {
         market: {
@@ -142,7 +143,20 @@ const App = () => {
     }, [logs]);
 
     return (
-        <div className="flex h-screen bg-background font-sans text-slate-300 relative">
+        <div className="flex flex-col md:flex-row h-screen bg-background font-sans text-slate-300 relative overflow-hidden">
+            {/* Mobile Header */}
+            <header className="md:hidden flex items-center justify-between p-4 bg-[#05070a] border-b border-white/5 z-50">
+                <div className="flex items-center gap-2">
+                    <Rocket className="text-primary w-6 h-6 rotate-45" />
+                    <h1 className="text-sm font-black tracking-tighter text-white uppercase italic">Launchpad AI</h1>
+                </div>
+                <button
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="p-2 text-slate-400 hover:text-white transition-colors"
+                >
+                    <Terminal size={20} />
+                </button>
+            </header>
             {/* Intel Modal */}
             <AnimatePresence>
                 {intelModal && (
@@ -157,7 +171,7 @@ const App = () => {
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.9, y: 20 }}
-                            className="glass-card max-w-2xl w-full p-16 rounded-[48px] border-white/10 shadow-2xl relative bg-[#0d1117] text-left"
+                            className="glass-card max-w-2xl w-full p-8 md:p-16 rounded-[32px] md:rounded-[48px] border-white/10 shadow-2xl relative bg-[#0d1117] text-left"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="absolute top-10 right-10">
@@ -203,7 +217,7 @@ const App = () => {
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.9, y: 20 }}
-                            className="glass-card max-w-4xl w-full p-16 rounded-[48px] border-white/10 shadow-2xl relative bg-[#0b0e14] text-left max-h-[85vh] overflow-y-auto custom-scrollbar"
+                            className="glass-card max-w-4xl w-full p-8 md:p-16 rounded-[32px] md:rounded-[48px] border-white/10 shadow-2xl relative bg-[#0b0e14] text-left max-h-[85vh] overflow-y-auto custom-scrollbar"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="absolute top-10 right-10">
@@ -249,16 +263,19 @@ const App = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-            {/* Sidebar */}
-            <aside className="w-80 bg-[#05070a] border-r border-white/5 flex flex-col p-8 z-20">
-                <div className="flex items-center gap-3 mb-12 px-2">
+            {/* Sidebar (Desktop & Mobile Drawer) */}
+            <aside className={`
+                fixed md:static inset-0 z-40 w-full md:w-80 bg-[#05070a] border-r border-white/5 flex flex-col p-8 transition-transform duration-300 ease-in-out
+                ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+            `}>
+                <div className="hidden md:flex items-center gap-3 mb-12 px-2">
                     <Rocket className="text-primary w-8 h-8 rotate-45" />
                     <h1 className="text-xl font-black tracking-tighter text-white uppercase italic">Launchpad AI</h1>
                 </div>
 
                 <nav className="space-y-3 mb-12">
                     <button
-                        onClick={() => setView('dashboard')}
+                        onClick={() => { setView('dashboard'); setIsMobileMenuOpen(false); }}
                         className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all ${view === 'dashboard' ? 'bg-primary/10 text-primary border border-primary/20' : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}`}
                     >
                         <LayoutDashboard size={20} />
@@ -267,7 +284,7 @@ const App = () => {
 
                     {activeRunId && (
                         <button
-                            onClick={() => setView(runStatus?.status === 'completed' ? 'results' : 'monitor')}
+                            onClick={() => { setView(runStatus?.status === 'completed' ? 'results' : 'monitor'); setIsMobileMenuOpen(false); }}
                             className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all ${view !== 'dashboard' ? 'bg-accent/10 text-accent border border-accent/20' : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'}`}
                         >
                             <Activity size={20} />
@@ -306,8 +323,8 @@ const App = () => {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 overflow-y-auto relative z-10">
-                <div className="max-w-6xl mx-auto px-16 py-16">
+            <main className="flex-1 overflow-y-auto relative z-10 custom-scrollbar">
+                <div className="max-w-6xl mx-auto px-6 md:px-16 py-8 md:py-16">
                     <AnimatePresence mode="wait">
                         {view === 'dashboard' && (
                             <motion.section
@@ -325,19 +342,19 @@ const App = () => {
                                     >
                                         <Rocket className="w-16 h-16 text-primary mx-auto mb-6 drop-shadow-[0_0_15px_rgba(79,70,229,0.5)]" />
                                     </motion.div>
-                                    <h2 className="text-6xl font-black text-white leading-none tracking-tighter uppercase italic">
-                                        Simulate Your <br />
+                                    <h2 className="text-4xl md:text-6xl font-black text-white leading-none tracking-tighter uppercase italic">
+                                        Simulate Your <br className="hidden md:block" />
                                         <span className="text-primary italic">Startup Success.</span>
                                     </h2>
-                                    <p className="text-slate-500 text-lg font-medium tracking-tight">
-                                        Validate, test, and grow your startup ideas with <br />advanced AI simulations.
+                                    <p className="text-slate-500 text-sm md:text-lg font-medium tracking-tight">
+                                        Validate, test, and grow your startup ideas with <br className="hidden md:block" />advanced AI simulations.
                                     </p>
                                 </header>
 
                                 <div className="w-full max-w-4xl relative group">
                                     <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-[32px] blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                                    <div className={`relative flex items-center bg-[#0d1117] border ${error ? 'border-red-500/50' : 'border-white/10'} rounded-[28px] p-2 pr-2 shadow-2xl search-glow`}>
-                                        <div className="pl-8 text-slate-500">
+                                    <div className={`relative flex flex-col md:flex-row items-center bg-[#0d1117] border ${error ? 'border-red-500/50' : 'border-white/10'} rounded-[24px] md:rounded-[28px] p-2 md:pr-2 shadow-2xl search-glow`}>
+                                        <div className="hidden md:block pl-8 text-slate-500">
                                             <Search size={24} />
                                         </div>
                                         <input
@@ -348,12 +365,12 @@ const App = () => {
                                                 if (error) setError(null);
                                             }}
                                             maxLength={1000}
-                                            placeholder="Enter your startup idea (e.g. AI-driven supply chain optimization)..."
-                                            className="flex-1 bg-transparent border-none py-6 px-4 text-white text-lg focus:outline-none placeholder:text-slate-600"
+                                            placeholder="Enter your startup idea..."
+                                            className="w-full md:flex-1 bg-transparent border-none py-4 md:py-6 px-4 md:px-4 text-white text-base md:text-lg focus:outline-none placeholder:text-slate-600"
                                         />
                                         <button
                                             onClick={startSimulation}
-                                            className="bg-primary hover:bg-primary/90 text-white font-black text-xs tracking-[0.2em] px-8 py-5 rounded-[22px] transition-all flex items-center gap-3 uppercase italic shadow-lg shadow-primary/20"
+                                            className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white font-black text-[10px] md:text-xs tracking-[0.2em] px-6 md:px-8 py-4 md:py-5 rounded-[18px] md:rounded-[22px] transition-all flex items-center justify-center gap-3 uppercase italic shadow-lg shadow-primary/20"
                                         >
                                             Generate Simulation <ChevronRight size={16} />
                                         </button>
@@ -369,7 +386,7 @@ const App = () => {
                                     )}
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-8 w-full max-w-4xl">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 w-full max-w-4xl">
                                     <MockupCard title="Market Validation" icon={<BarChart3 />} desc="Simulate current market conditions to test your core value proposition." onClick={() => setIntelModal('market')} />
                                     <MockupCard title="AI Co-Founder" icon={<Bot />} desc="AI agents refine your strategy with expert consistency checks." onClick={() => setIntelModal('founder')} />
                                     <MockupCard title="Financial Modeling" icon={<LineChart />} desc="Analytics, financial modeling, and realistic growth projections." onClick={() => setIntelModal('finance')} />
@@ -385,54 +402,54 @@ const App = () => {
                                 animate={{ opacity: 1 }}
                                 className="space-y-10"
                             >
-                                <div className="flex items-center justify-between border-b border-white/5 pb-8">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/5 pb-8 gap-6">
                                     <header>
                                         <div className="flex items-center gap-3 text-primary mb-3">
                                             <Zap size={18} fill="currentColor" />
                                             <span className="text-[10px] font-black uppercase tracking-[0.4em] italic">Telemetry Uplink Active</span>
                                         </div>
-                                        <h2 className="text-4xl font-black text-white uppercase italic tracking-tighter">Processing Neural Loop...</h2>
+                                        <h2 className="text-2xl md:text-4xl font-black text-white uppercase italic tracking-tighter">Processing Neural Loop...</h2>
                                     </header>
 
                                     {/* Real-time Token Metrics Badge */}
-                                    <div className="flex items-center gap-4">
-                                        <div className="glass-card px-6 py-3 rounded-2xl border-white/5 flex items-center gap-8">
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                        <div className="glass-card px-4 md:px-6 py-3 rounded-2xl border-white/5 flex items-center gap-6 md:gap-8">
                                             <div className="text-center">
-                                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Metabolism</span>
-                                                <span className="text-sm font-black text-primary font-mono">{tokenMetrics.totalTokens}<span className="text-[9px] ml-1">TK</span></span>
+                                                <span className="text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Metabolism</span>
+                                                <span className="text-xs md:text-sm font-black text-primary font-mono">{tokenMetrics.totalTokens}<span className="text-[8px] md:text-[9px] ml-1">TK</span></span>
                                             </div>
-                                            <div className="text-center border-l border-white/10 pl-8">
-                                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Density</span>
-                                                <span className="text-sm font-black text-accent font-mono">{tokenMetrics.density}</span>
+                                            <div className="text-center border-l border-white/10 pl-6 md:pl-8">
+                                                <span className="text-[8px] md:text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">Density</span>
+                                                <span className="text-xs md:text-sm font-black text-accent font-mono">{tokenMetrics.density}</span>
                                             </div>
                                         </div>
-                                        <div className="bg-primary/5 px-8 py-4 rounded-3xl border border-primary/20 flex items-center gap-4">
-                                            <motion.div animate={{ scale: [1, 1.4, 1], opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_rgba(79,70,229,0.8)]" />
-                                            <span className="text-xs font-black font-mono text-primary tracking-widest uppercase italic">{runStatus?.status}</span>
+                                        <div className="bg-primary/5 px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl border border-primary/20 flex items-center gap-4">
+                                            <motion.div animate={{ scale: [1, 1.4, 1], opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-2 h-2 md:w-2.5 md:h-2.5 bg-primary rounded-full shadow-[0_0_10px_rgba(79,70,229,0.8)]" />
+                                            <span className="text-[10px] md:text-xs font-black font-mono text-primary tracking-widest uppercase italic">{runStatus?.status}</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="glass-card rounded-[32px] overflow-hidden flex flex-col h-[700px] border-white/5 shadow-neon-glow relative bg-[#020305]">
-                                    {/* Sidebar for metrics inside terminal */}
-                                    <div className="absolute top-20 right-8 w-64 space-y-4 z-20">
+                                <div className="glass-card rounded-[24px] md:rounded-[32px] overflow-hidden flex flex-col h-[500px] md:h-[700px] border-white/5 shadow-neon-glow relative bg-[#020305]">
+                                    {/* Sidebar for metrics inside terminal - Hidden on mobile */}
+                                    <div className="hidden lg:block absolute top-20 right-8 w-64 space-y-4 z-20">
                                         <MetricMiniCard icon={<Coins size={14} />} label="Avg Tokens / Request" value={tokenMetrics.avgTokensPerRequest} color="text-indigo-400" />
                                         <MetricMiniCard icon={<Target size={14} />} label="Cost / Successful Task" value={`$${(tokenMetrics.totalTokens * 0.000005).toFixed(4)}`} color="text-emerald-400" />
                                     </div>
 
-                                    <div className="bg-[#05070a] p-5 border-b border-white/5 flex items-center justify-between">
-                                        <div className="flex items-center gap-6">
-                                            <div className="flex gap-2">
-                                                <div className="w-2.5 h-2.5 rounded-full bg-red-500/30"></div>
-                                                <div className="w-2.5 h-2.5 rounded-full bg-amber-500/30"></div>
-                                                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/30"></div>
+                                    <div className="bg-[#05070a] p-3 md:p-5 border-b border-white/5 flex items-center justify-between">
+                                        <div className="flex items-center gap-4 md:gap-6">
+                                            <div className="flex gap-1.5 md:gap-2">
+                                                <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-red-500/30"></div>
+                                                <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-amber-500/30"></div>
+                                                <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-emerald-500/30"></div>
                                             </div>
-                                            <span className="text-[10px] font-bold font-mono text-slate-500 tracking-[0.2em] uppercase border-l border-white/10 pl-6">
-                                                Simulator_Engine // RunID: {activeRunId?.substring(0, 8)}
+                                            <span className="text-[8px] md:text-[10px] font-bold font-mono text-slate-500 tracking-[0.2em] uppercase border-l border-white/10 pl-4 md:pl-6">
+                                                Sim_Engine // {activeRunId?.substring(0, 8)}
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="flex-1 overflow-y-auto p-10 space-y-6 agent-terminal custom-scrollbar">
+                                    <div className="flex-1 overflow-y-auto p-4 md:p-10 space-y-4 md:space-y-6 agent-terminal custom-scrollbar text-left">
                                         {logs.map((log, i) => (
                                             <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} key={i} className="text-xs border-l border-white/5 pl-6 py-2">
                                                 <div className="flex items-center gap-4 mb-2">
@@ -469,52 +486,52 @@ const App = () => {
                                 animate={{ opacity: 1 }}
                                 className="space-y-16 pb-24"
                             >
-                                <header className="flex items-end justify-between border-b border-white/5 pb-16">
-                                    <div className="space-y-6 text-left">
-                                        <div className="inline-flex items-center gap-3 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-primary/20">
+                                <header className="flex flex-col lg:flex-row lg:items-end justify-between border-b border-white/5 pb-8 md:pb-16 gap-8">
+                                    <div className="space-y-4 md:space-y-6 text-left">
+                                        <div className="inline-flex items-center gap-3 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] border border-primary/20">
                                             <ShieldCheck size={14} /> Analysis Certified
                                         </div>
-                                        <h2 className="text-5xl font-black text-white italic tracking-tighter uppercase text-left">{runStatus.results.idea}</h2>
-                                        <p className="text-slate-500 font-medium text-lg text-left">Detailed Venture Architecture & Strategic Roadmap.</p>
+                                        <h2 className="text-3xl md:text-5xl font-black text-white italic tracking-tighter uppercase text-left">{runStatus.results.idea}</h2>
+                                        <p className="text-slate-500 font-medium text-base md:text-lg text-left">Detailed Venture Architecture & Strategic Roadmap.</p>
                                     </div>
 
-                                    <div className="flex items-center gap-12">
-                                        <div className="text-right border-r border-white/5 pr-12">
-                                            <span className="text-slate-600 text-[10px] font-black uppercase tracking-[0.4em] block mb-4 italic">Resource Efficiency</span>
-                                            <div className="text-3xl font-black text-accent italic tracking-tighter leading-none">
-                                                {tokenMetrics.density}<span className="text-xs text-slate-700 ml-1">INDEX</span>
+                                    <div className="flex items-center justify-between lg:justify-end gap-6 md:gap-12 w-full lg:w-auto mt-4 md:mt-0">
+                                        <div className="text-left lg:text-right lg:border-r border-white/5 lg:pr-12">
+                                            <span className="text-slate-600 text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] block mb-2 md:mb-4 italic">Efficiency</span>
+                                            <div className="text-2xl md:text-3xl font-black text-accent italic tracking-tighter leading-none">
+                                                {tokenMetrics.density}<span className="text-[10px] text-slate-700 ml-1 italic">IDX</span>
                                             </div>
                                         </div>
                                         {runStatus.results.final_context?.evaluation_scorecard && (
                                             <div className="text-right">
-                                                <span className="text-slate-600 text-[10px] font-black uppercase tracking-[0.4em] block mb-4 italic">Evaluation Quotient</span>
-                                                <div className="text-7xl font-black text-white italic tracking-tighter leading-none">
-                                                    {runStatus.results.final_context.evaluation_scorecard.total_score}<span className="text-2xl text-slate-800 ml-2">/100</span>
+                                                <span className="text-slate-600 text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] block mb-2 md:mb-4 italic">Quotient</span>
+                                                <div className="text-5xl md:text-7xl font-black text-white italic tracking-tighter leading-none">
+                                                    {runStatus.results.final_context.evaluation_scorecard.total_score}<span className="text-xl md:text-2xl text-slate-800 ml-2">/100</span>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
                                 </header>
 
-                                <div className="grid grid-cols-3 gap-10">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
                                     <ResultCard title="Market Fit" content={runStatus.results.final_context?.market_analysis} onClick={setSelectedCard} />
                                     <ResultCard title="Technical Design" content={runStatus.results.final_context?.tech_architecture} onClick={setSelectedCard} />
                                     <ResultCard title="Financial Model" content={runStatus.results.final_context?.financial_plan} onClick={setSelectedCard} />
                                 </div>
 
-                                <div className="glass-card rounded-[48px] p-16 relative overflow-hidden border-white/5 bg-[#0d1117] shadow-neon-indigo">
-                                    <div className="absolute top-0 right-0 p-16 opacity-[0.03] scale-150 rotate-12"><Rocket size={200} /></div>
-                                    <h3 className="text-4xl font-black text-white mb-16 uppercase italic tracking-tighter flex items-center gap-6">
-                                        <span className="bg-primary p-3 rounded-2xl text-white shadow-neon-indigo"><Zap size={28} /></span>
+                                <div className="glass-card rounded-[32px] md:rounded-[48px] p-8 md:p-16 relative overflow-hidden border-white/5 bg-[#0d1117] shadow-neon-indigo">
+                                    <div className="absolute top-0 right-0 p-8 md:p-16 opacity-[0.03] scale-100 md:scale-150 rotate-12"><Rocket size={200} /></div>
+                                    <h3 className="text-2xl md:text-4xl font-black text-white mb-10 md:mb-16 uppercase italic tracking-tighter flex items-center gap-4 md:gap-6 text-left">
+                                        <span className="bg-primary p-2 md:p-3 rounded-xl md:rounded-2xl text-white shadow-neon-indigo"><Zap size={24} /></span>
                                         The Neural Pitch
                                     </h3>
-                                    <div className="grid grid-cols-1 gap-12 max-w-4xl text-left">
+                                    <div className="grid grid-cols-1 gap-8 md:gap-12 max-w-4xl text-left">
                                         <PitchSection title="Startup Name" content={runStatus.results.final_context?.pitch?.startup_name} highlight />
-                                        <div className="grid grid-cols-2 gap-16">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
                                             <PitchSection title="The Problem" content={runStatus.results.final_context?.pitch?.problem} />
                                             <PitchSection title="The Solution" content={runStatus.results.final_context?.pitch?.solution} />
                                         </div>
-                                        <div className="grid grid-cols-2 gap-16 py-12 border-y border-white/5">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 py-8 md:py-12 border-y border-white/5">
                                             <PitchSection title="Business Model" content={runStatus.results.final_context?.pitch?.business_model} />
                                             <PitchSection title="Advanced Tech" content={runStatus.results.final_context?.pitch?.technology} />
                                         </div>
@@ -522,25 +539,25 @@ const App = () => {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-8 text-left">
-                                    <div className="glass-card p-10 rounded-[40px] space-y-8 bg-[#0d1117]/80 border-white/5">
-                                        <h4 className="font-black text-xs uppercase tracking-[0.4em] text-primary italic">Critique Intelligence</h4>
-                                        <div className="grid grid-cols-2 gap-8">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 text-left">
+                                    <div className="glass-card p-6 md:p-10 rounded-[32px] md:rounded-[40px] space-y-6 md:space-y-8 bg-[#0d1117]/80 border-white/5">
+                                        <h4 className="font-black text-[10px] md:text-xs uppercase tracking-[0.4em] text-primary italic">Critique Intelligence</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                                             <div>
-                                                <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest block mb-4 italic">High Quality Indicators</span>
-                                                <ul className="space-y-3">
+                                                <span className="text-[9px] md:text-[10px] font-black text-emerald-500 uppercase tracking-widest block mb-3 md:mb-4 italic">Quality Indicators</span>
+                                                <ul className="space-y-2 md:space-y-3">
                                                     {runStatus.results.final_context?.evaluation_scorecard?.feedback?.strengths?.map((s, i) => (
-                                                        <li key={i} className="text-[11px] text-slate-400 flex items-start gap-3 leading-relaxed">
+                                                        <li key={i} className="text-[10px] md:text-[11px] text-slate-400 flex items-start gap-3 leading-relaxed">
                                                             <span className="mt-1.5 w-1 h-1 rounded-full bg-emerald-500 shrink-0" /> {s}
                                                         </li>
                                                     ))}
                                                 </ul>
                                             </div>
                                             <div>
-                                                <span className="text-[10px] font-black text-rose-500 uppercase tracking-widest block mb-4 italic">Optimisation Required</span>
-                                                <ul className="space-y-3">
+                                                <span className="text-[9px] md:text-[10px] font-black text-rose-500 uppercase tracking-widest block mb-3 md:mb-4 italic">Optimisation</span>
+                                                <ul className="space-y-2 md:space-y-3">
                                                     {runStatus.results.final_context?.evaluation_scorecard?.feedback?.weaknesses?.map((s, i) => (
-                                                        <li key={i} className="text-[11px] text-slate-400 flex items-start gap-3 leading-relaxed">
+                                                        <li key={i} className="text-[10px] md:text-[11px] text-slate-400 flex items-start gap-3 leading-relaxed">
                                                             <span className="mt-1.5 w-1 h-1 rounded-full bg-rose-500 shrink-0" /> {s}
                                                         </li>
                                                     ))}
@@ -548,10 +565,10 @@ const App = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="bg-primary/5 border border-primary/20 p-12 rounded-[40px] flex flex-col justify-center text-center relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px] rounded-full" />
-                                        <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-primary mb-10 italic text-center">Executive Verdict</h4>
-                                        <p className="text-3xl font-black italic text-white leading-tight tracking-tight uppercase text-center">
+                                    <div className="bg-primary/5 border border-primary/20 p-8 md:p-12 rounded-[32px] md:rounded-[40px] flex flex-col justify-center text-center relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-24 md:w-32 h-24 md:h-32 bg-primary/20 blur-[60px] rounded-full" />
+                                        <h4 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.5em] text-primary mb-6 md:mb-10 italic text-center">Executive Verdict</h4>
+                                        <p className="text-xl md:text-3xl font-black italic text-white leading-tight tracking-tight uppercase text-center">
                                             "{runStatus.results.final_context?.evaluation_scorecard?.feedback?.investor_verdict}"
                                         </p>
                                     </div>
@@ -616,9 +633,9 @@ const ResultCard = ({ title, content, onClick }) => {
 const PitchSection = ({ title, content, highlight }) => {
     if (!content) return null;
     return (
-        <div className="space-y-4 text-left">
-            <h5 className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-500 italic text-left">{title}</h5>
-            <p className={`${highlight ? 'text-5xl text-primary font-black italic tracking-tighter uppercase' : 'text-xl text-slate-300 font-bold leading-snug tracking-tight'} text-left`}>
+        <div className="space-y-3 md:space-y-4 text-left">
+            <h5 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.5em] text-slate-500 italic text-left">{title}</h5>
+            <p className={`${highlight ? 'text-3xl md:text-5xl text-primary font-black italic tracking-tighter uppercase' : 'text-lg md:text-xl text-slate-300 font-bold leading-snug tracking-tight'} text-left`}>
                 {content}
             </p>
         </div>
