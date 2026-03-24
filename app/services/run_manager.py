@@ -19,17 +19,29 @@ class RunManager:
     """
 
     @staticmethod
-    async def run_simulation(idea: str, run_id: Optional[str] = None) -> Dict[str, Any]:
+    async def run_simulation(
+        idea: str, 
+        run_id: Optional[str] = None, 
+        parent_results: Optional[Dict[str, Any]] = None,
+        feedback: Optional[str] = None
+    ) -> Dict[str, Any]:
         run_id = run_id or str(uuid.uuid4())
         print(f"RUN_MANAGER: Starting simulation for idea: '{idea}' (Run ID: {run_id})")
         
         # 1. Planning Phase
-        plan = await create_plan(idea, run_id=run_id)
+        plan = await create_plan(idea, run_id=run_id, parent_results=parent_results, feedback=feedback)
+        # For refinement, we might skip the general review or update it later
         review = await review_plan(idea, plan, run_id=run_id)
         
         if not review.valid:
             print(f"RUN_MANAGER: Initial plan invalid, refining... Issues: {review.issues}")
-            plan = await create_plan(f"Fix this plan based on issues: {review.issues}. Suggested fix: {review.suggested_fix}. Original plan: {plan}", run_id=run_id)
+            # If refinement plan fails, we pass the same context back for fixing
+            plan = await create_plan(
+                f"Fix this plan based on issues: {review.issues}. Suggested fix: {review.suggested_fix}. Original plan: {plan}", 
+                run_id=run_id,
+                parent_results=parent_results,
+                feedback=feedback
+            )
 
         # 2. DAG Preparation
         dag = await build_dag(plan)

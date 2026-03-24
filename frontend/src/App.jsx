@@ -18,7 +18,8 @@ import {
     Bot,
     Activity,
     Coins,
-    Target
+    Target,
+    RefreshCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as api from './services/api';
@@ -35,6 +36,7 @@ const App = () => {
     const [selectedCard, setSelectedCard] = useState(null);
     const [error, setError] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [refinementFeedback, setRefinementFeedback] = useState("");
 
     const intelData = {
         market: {
@@ -97,17 +99,36 @@ const App = () => {
 
     const startSimulation = async () => {
         if (!idea.trim()) return;
-        setError(null);
+        setLogs([]);
+        setRunStatus({ status: 'pending' });
+        setView('monitor');
         try {
             const runId = await api.simulate(idea);
             setActiveRunId(runId);
-            setLogs([]);
-            setRunStatus({ status: 'pending' });
-            setView('monitor');
         } catch (err) {
-            const msg = err.response?.data?.detail || "Simulation failed to start. Please check your prompt.";
+            const msg = err.response?.data?.detail || "Simulation failed to start.";
             setError(msg);
-            console.error("Simulation error:", err);
+            setView('dashboard');
+        }
+    };
+
+    const handleRefinement = async () => {
+        if (!refinementFeedback.trim()) return;
+        const parentId = activeRunId;
+        const targetIdea = runStatus.results.idea;
+
+        setLogs([]);
+        setRunStatus({ status: 'pending' });
+        setView('monitor');
+        setRefinementFeedback("");
+
+        try {
+            const runId = await api.simulate(targetIdea, parentId, refinementFeedback);
+            setActiveRunId(runId);
+        } catch (err) {
+            const msg = err.response?.data?.detail || "Refinement failed.";
+            setError(msg);
+            setView('results');
         }
     };
 
@@ -488,11 +509,20 @@ const App = () => {
                             >
                                 <header className="flex flex-col lg:flex-row lg:items-end justify-between border-b border-white/5 pb-8 md:pb-16 gap-8">
                                     <div className="space-y-4 md:space-y-6 text-left">
-                                        <div className="inline-flex items-center gap-3 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] border border-primary/20">
-                                            <ShieldCheck size={14} /> Analysis Certified
+                                        <div className="flex items-center gap-3">
+                                            <div className="inline-flex items-center gap-3 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] border border-primary/20">
+                                                <ShieldCheck size={14} /> Analysis Certified
+                                            </div>
+                                            {runStatus.iteration && (
+                                                <div className="inline-flex items-center gap-3 bg-accent/10 text-accent px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] border border-accent/20 italic">
+                                                    Iteration v{runStatus.iteration}
+                                                </div>
+                                            )}
                                         </div>
                                         <h2 className="text-3xl md:text-5xl font-black text-white italic tracking-tighter uppercase text-left">{runStatus.results.idea}</h2>
-                                        <p className="text-slate-500 font-medium text-base md:text-lg text-left">Detailed Venture Architecture & Strategic Roadmap.</p>
+                                        <p className="text-slate-500 font-medium text-base md:text-lg text-left">
+                                            {runStatus.feedback ? `Refined based on: "${runStatus.feedback}"` : "Detailed Venture Architecture & Strategic Roadmap."}
+                                        </p>
                                     </div>
 
                                     <div className="flex items-center justify-between lg:justify-end gap-6 md:gap-12 w-full lg:w-auto mt-4 md:mt-0">
@@ -571,6 +601,34 @@ const App = () => {
                                         <p className="text-xl md:text-3xl font-black italic text-white leading-tight tracking-tight uppercase text-center">
                                             "{runStatus.results.final_context?.evaluation_scorecard?.feedback?.investor_verdict}"
                                         </p>
+                                    </div>
+                                </div>
+
+                                {/* Refinement Section */}
+                                <div className="mt-16 pt-16 border-t border-white/5 space-y-10">
+                                    <div className="text-left">
+                                        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-4 italic">Neural Pivot Interface</h4>
+                                        <p className="text-sm text-slate-400 mb-8 max-w-xl leading-relaxed">
+                                            Not satisfied with the current trajectory? Provide feedback to the agent swarm to pivot the business model, tech stack, or financial projections.
+                                        </p>
+                                        <div className="relative group">
+                                            <div className="absolute -inset-1 bg-gradient-to-r from-accent to-primary rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                                            <div className="relative bg-[#05070a] border border-white/10 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-end gap-6 shadow-2xl">
+                                                <textarea
+                                                    value={refinementFeedback}
+                                                    onChange={(e) => setRefinementFeedback(e.target.value)}
+                                                    placeholder="e.g. Pivot to a B2B subscription model with a focus on enterprise security..."
+                                                    className="w-full bg-transparent border-none text-slate-200 placeholder:text-slate-600 focus:outline-none resize-none h-24 text-sm leading-relaxed"
+                                                />
+                                                <button
+                                                    onClick={handleRefinement}
+                                                    disabled={!refinementFeedback.trim()}
+                                                    className="w-full md:w-auto bg-accent hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-[10px] tracking-[0.2em] px-8 py-4 rounded-xl transition-all flex items-center justify-center gap-3 uppercase italic shadow-lg shadow-accent/20"
+                                                >
+                                                    Refine Strategy <RefreshCw size={14} className={refinementFeedback.trim() ? "animate-spin-slow" : ""} />
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </motion.section>

@@ -27,26 +27,53 @@ async def start_simulation(request: SimulationRequest, background_tasks: Backgro
         raise HTTPException(status_code=400, detail=validation.reason or "Invalid startup idea")
         
     idea = validation.cleansed_idea or request.idea
-    run_id = str(uuid.uuid4())
-    
+    # 2. Historical Context (Iteration)
+    parent_results = None
+    iteration = 1
+    if request.parent_run_id:
+        parent_run = await get_run(request.parent_run_id)
+        if parent_run:
+            parent_results = (parent_run.get("results") or {}).get("final_context", {})
+            iteration = (parent_run.get("iteration") or 1) + 1
+
     ACTIVE_RUNS[run_id] = {
         "run_id": run_id,
         "idea": idea,
         "status": "pending",
+        "iteration": iteration,
+        "parent_run_id": request.parent_run_id,
+        "feedback": request.feedback,
         "created_at": datetime.now().isoformat(),
         "context": {}
     }
     
     # Save initial state to DB
-    await save_run(run_id, idea, "pending")
+    await save_run(
+        run_id, 
+        idea, 
+        "pending", 
+        parent_run_id=request.parent_run_id, 
+        iteration=iteration, 
+        feedback=request.feedback
+    )
     
     # ── Simulation worker ───────────
-    async def run_task(idea: str, run_id: str):
+    async def run_task(idea: str, run_id: str, parent_results: dict, feedback: str, iteration: int):
         try:
             ACTIVE_RUNS[run_id]["status"] = "running"
-            await save_run(run_id, idea, "running")
+            await save_run(
+                run_id, idea, "running", 
+                parent_run_id=request.parent_run_id, 
+                iteration=iteration, 
+                feedback=feedback
+            )
             
-            result = await RunManager.run_simulation(idea, run_id=run_id)
+            result = await RunManager.run_simulation(
+                idea, 
+                run_id=run_id, 
+                parent_results=parent_results, 
+                feedback=feedback
+            )
             
             # Ensure context is JSON serializable
             raw_context = result.get("results", {})
@@ -67,14 +94,26 @@ async def start_simulation(request: SimulationRequest, background_tasks: Backgro
             scorecard = serializable_context.get("evaluation_scorecard", {})
             score = scorecard.get("total_score") if isinstance(scorecard, dict) else None
             
-            await save_run(run_id, idea, "completed", results=result, score=score)
+            await save_run(
+                run_id, idea, "completed", 
+                results=result, score=score,
+                parent_run_id=request.parent_run_id,
+                iteration=iteration,
+                feedback=feedback
+            )
         except Exception as e:
             ACTIVE_RUNS[run_id]["status"] = "failed"
             ACTIVE_RUNS[run_id]["error"] = str(e)
-            await save_run(run_id, idea, "failed", results={"error": str(e)})
+            await save_run(
+                run_id, idea, "failed", 
+                results={"error": str(e)},
+                parent_run_id=request.parent_run_id,
+                iteration=iteration,
+                feedback=feedback
+            )
             print(f"SIMULATION ERROR ({run_id}):", e)
 
-    background_tasks.add_task(run_task, request.idea, run_id)
+    background_tasks.add_task(run_task, idea, run_id, parent_results, request.feedback, iteration)
     
     return {"run_id": run_id}
 
@@ -89,7 +128,9 @@ async def get_run_status(run_id: str):
             "results": {
                 "idea": run_data.get("idea"),
                 "final_context": run_data.get("context", {})
-            }
+            },
+            "iteration": run_data.get("iteration", 1),
+            "feedback": run_data.get("feedback")
         }
         
     # 2. Check Database (Neon)

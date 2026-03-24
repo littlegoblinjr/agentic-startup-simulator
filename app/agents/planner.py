@@ -1,7 +1,8 @@
+import json
 from enum import Enum
 from pydantic import BaseModel
 from openai import AsyncOpenAI
-from typing import List
+from typing import List, Optional, Dict, Any
 
 
 from app.core.llm_config import client, DEFAULT_MODEL
@@ -18,6 +19,7 @@ class TaskPlan(BaseModel):
     task_id: str
     agent_type: AgentType
     dependencies: List[str] = []
+    instructions: str = "" # Specific directive for the agent in this run
     
 class Plan(BaseModel):
 
@@ -46,27 +48,47 @@ Planning rules:
 6. The evaluation_agent depends on pitch_agent.
 7. Ensure the workflow is a valid DAG (no cycles).
 8. Use task IDs like TASK_1, TASK_2, etc.
-8. Each task must include:
-   - task_id
-   - agent_type
-   - dependencies (list of task_ids)
+9. Each task must include instructions that clearly state what the agent should do.
 
-The plan should allow parallel execution where possible (tech and finance can run in parallel).
+Refinement Mode:
+If 'Previous Run Results' and 'User Feedback' are provided, you are in REFINEMENT MODE.
+- Your goal is to PIVOT or REFINE the existing startup plan based on user feedback.
+- If an agent doesn't need to change its output, you can still include it in the plan to maintain continuity.
+- Use the 'instructions' field to give specific, surgical orders for the PIVOT (e.g., "Update tech stack for B2B instead of B2C").
+- Reference previous findings in your instructions.
 """
 
 from app.core.telemetry import get_telemetry
 
-async def create_plan(startup_idea:str, run_id:str = None) -> Plan:
+async def create_plan(
+    startup_idea: str, 
+    run_id: str = None, 
+    parent_results: Optional[Dict[str, Any]] = None,
+    feedback: Optional[str] = None
+) -> Plan:
     telemetry = get_telemetry(run_id, idea=startup_idea) if run_id else None
     
     if telemetry:
         telemetry.log_event("planner", "generate_plan_start", {"idea": startup_idea})
 
+    user_content = f"Startup Idea: {startup_idea}"
+    if feedback and parent_results:
+        user_content = f"""
+        REFINEMENT REQUEST
+        Original Idea: {startup_idea}
+        User Feedback: {feedback}
+        
+        Previous Simulation Results Summary:
+        {json.dumps(parent_results, indent=2)}
+        
+        Please provide an updated workflow and specific surgical instructions for the agents to implement this pivot.
+        """
+
     response = await client.beta.chat.completions.parse(
         model=DEFAULT_MODEL,
         messages = [
             {"role": "system", "content": PLANNER_PROMPT},
-            {"role":"user", "content": startup_idea}
+            {"role":"user", "content": user_content}
         ],
         response_format = Plan
     )

@@ -55,6 +55,8 @@ async def init_db():
             """
             CREATE TABLE IF NOT EXISTS simulation_runs (
                 run_id UUID PRIMARY KEY,
+                parent_run_id UUID REFERENCES simulation_runs(run_id),
+                iteration INTEGER DEFAULT 1,
                 idea TEXT NOT NULL,
                 status TEXT NOT NULL,
                 results JSONB,
@@ -72,18 +74,26 @@ async def init_db():
         )
     
 
-async def save_run(run_id: str, idea: str, status: str, results: Optional[Dict] = None, score: Optional[int] = None):
+async def save_run(run_id: str, idea: str, status: str, results: Optional[Dict] = None,
+
+ score: Optional[int] = None,
+parent_run_id: Optional[str] = None,
+ iteration: int = 1,
+ feedback: Optional[str] = None):
     async with pool.acquire() as connection:
         await connection.execute("""
-            INSERT INTO simulation_runs (run_id, idea, status, results, score, updated_at)
-            VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)
+            INSERT INTO simulation_runs (run_id, idea, status, results, score, 
+            parent_run_id, iteration, feedback, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP)
             ON CONFLICT (run_id) 
             DO UPDATE SET 
                 status = EXCLUDED.status,
                 results = EXCLUDED.results,
                 score = EXCLUDED.score,
+                feedback = EXCLUDED.feedback, #UPDATE FEEDBACK iF RE-SUBMITTED
                 updated_at = CURRENT_TIMESTAMP
-        """, run_id, idea, status, json.dumps(results) if results else None, score)
+        """, run_id, idea, status, json.dumps(results) if results else None, score,
+        parent_run_id, iteration, feedback)
 
 async def get_run(run_id: str) -> Optional[Dict[str, Any]]:
     async with pool.acquire() as connection:

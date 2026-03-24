@@ -4,8 +4,12 @@ const api = axios.create({
     baseURL: '/api',
 });
 
-export const simulate = async (idea) => {
-    const { data } = await api.post('/simulate', { idea });
+export const simulate = async (idea, parentRunId = null, feedback = null) => {
+    const { data } = await api.post('/simulate', {
+        idea,
+        parent_run_id: parentRunId,
+        feedback: feedback
+    });
     return data.run_id;
 };
 

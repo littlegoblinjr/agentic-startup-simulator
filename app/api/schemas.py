@@ -5,6 +5,8 @@ from datetime import datetime
 
 class SimulationRequest(BaseModel):
     idea: str
+    parent_run_id: Optional[str] = None
+    feedback: Optional[str] = None
 
 
 class TaskStatus(BaseModel):
