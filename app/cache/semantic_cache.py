@@ -6,8 +6,14 @@ import os
 
 CACHE_FILE = "semantic_cache.json"
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# Lazy-loaded model singleton
+_model = None
 
+def _get_model() -> SentenceTransformer:
+    global _model
+    if _model is None:
+        _model = SentenceTransformer("all-MiniLM-L6-v2")
+    return _model
 if os.path.exists(CACHE_FILE):
     with open(CACHE_FILE, "r") as f:
         cache_data = json.load(f)
@@ -42,6 +48,7 @@ async def semantic_cached_search(query: str):
 
     query = query.lower().strip()
 
+    model = _get_model()
     query_embedding = model.encode(query)
 
     # 🔍 check semantic match
