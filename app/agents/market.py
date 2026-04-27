@@ -75,9 +75,11 @@ Improve the following research results by generating 2 deeper search queries. Re
 class QuerySchema(BaseModel):
     queries: List[str]
 
+from pydantic import BaseModel, Field
+
 class Final_Market_Analysis_Schema(BaseModel):
-    target_audience: str
-    market_size: str
+    target_audience: str = Field(description="A comprehensive plain text paragraph describing the target audience. Do NOT use nested JSON or dictionary formats.")
+    market_size: str = Field(description="A comprehensive plain text paragraph describing the market size and TAM. Do NOT use nested JSON or dictionary formats.")
     competitors: List[str]
     market_trends: List[str]
     opportunities: List[str]
@@ -171,6 +173,12 @@ async def market_agent(context):
             if telemetry: telemetry.log_event("market_agent", f"round_{round_idx}_output", {"output": output[:100] + "..."}, usage=usage)
             
             data = parse_llm_json(output)
+            if isinstance(data, list):
+                merged = {}
+                for item in data:
+                    if isinstance(item, dict):
+                        merged.update(item)
+                data = merged
 
             if "tool_calls" in data:
                 results = []

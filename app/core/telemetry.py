@@ -24,6 +24,19 @@ class TelemetryManager:
         # Ensure log directory exists
         if not os.path.exists(self.log_dir):
             os.makedirs(self.log_dir)
+        
+    def seed_events(self, events: List[Dict[str, Any]]):
+        """Seeds the current run with events from a previous (parent) run."""
+        if not events:
+            return
+        
+        # We prefix parent events to differentiate them if needed, 
+        # but for the UI we want them to feel like part of the same timeline.
+        self.events.extend(events)
+        
+        # Update total cost based on inherited events
+        for event in events:
+            self.total_cost += event.get("cost_usd", 0.0)
 
     def calculate_usage_cost(self, usage: Dict[str, Any], model: str = DEFAULT_MODEL) -> float:
         """Calculates cost in USD based on token usage."""

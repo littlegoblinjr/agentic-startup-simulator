@@ -5,15 +5,16 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# Centralized OpenAI client
+# Centralized OpenAI-Compatible client
 client = AsyncOpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
+    api_key=os.getenv("OPENAI_API_KEY"),
+    base_url=os.getenv("OPENAI_BASE_URL", None) # Allows using Groq, Together, vLLM, etc.
 )
 
 # Unified model selection
-# Recommended: 'gpt-4o-mini' for high-performance, cost-effective agentic workflows.
-DEFAULT_MODEL = "gpt-4o-mini"
-PARSING_MODEL = "gpt-4o-mini" # Both same for consistency
+# Defaults to 'qwen2.5-3b-instruct' but can be overridden in .env
+DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "qwen2.5-3b-instruct")
+PARSING_MODEL = os.getenv("PARSING_MODEL", DEFAULT_MODEL)
 
 # Pricing for OpenAI Models (Price per 1M tokens)
 # Source: https://openai.com/api/pricing/
@@ -25,5 +26,9 @@ MODEL_PRICING = {
     "gpt-4o": {
         "input": 2.50,
         "output": 10.00
+    },
+    "qwen2.5-3b-instruct": {
+        "input": 0.0, # Adjust if using a paid provider
+        "output": 0.0
     }
 }

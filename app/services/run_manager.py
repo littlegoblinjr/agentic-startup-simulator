@@ -7,6 +7,7 @@ from app.agents.critic import review_plan
 from app.orchestrator.dag_builder import build_dag
 from app.orchestrator.scheduler import Scheduler
 from app.core.telemetry import get_telemetry
+from app.evaluation.quality_gates import run_all_quality_gates
 
 
 class RunManager:
@@ -28,37 +29,43 @@ class RunManager:
         run_id = run_id or str(uuid.uuid4())
         print(f"RUN_MANAGER: Starting simulation for idea: '{idea}' (Run ID: {run_id})")
         
-        # 1. Planning Phase
+        # 1. Planning Phase (Direct execution to avoid Critic loops)
         plan = await create_plan(idea, run_id=run_id, parent_results=parent_results, feedback=feedback)
-        # For refinement, we might skip the general review or update it later
-        review = await review_plan(idea, plan, run_id=run_id)
-        
-        if not review.valid:
-            print(f"RUN_MANAGER: Initial plan invalid, refining... Issues: {review.issues}")
-            # If refinement plan fails, we pass the same context back for fixing
-            plan = await create_plan(
-                f"Fix this plan based on issues: {review.issues}. Suggested fix: {review.suggested_fix}. Original plan: {plan}", 
-                run_id=run_id,
-                parent_results=parent_results,
-                feedback=feedback
-            )
 
         # 2. DAG Preparation
         dag = await build_dag(plan)
         context = {
             "idea": idea,
-            "run_id": run_id
+            "run_id": run_id,
+            "skipped_agents": [a.value for a in plan.skipped_agents] if hasattr(plan, "skipped_agents") else [],
+            **(parent_results or {})
         }
 
         # 3. Execution Phase
         scheduler = Scheduler(dag, context)
         print("RUN_MANAGER: Executing task DAG...")
         await scheduler.execute()
-        
-        # 4. Results
+
+        # 4. Per-agent quality gates — run after all agents complete
         telemetry = get_telemetry(run_id, idea=idea)
+        quality_summary = run_all_quality_gates(context)
+        print(
+            f"RUN_MANAGER: Quality gates — "
+            f"{quality_summary['agents_passed']}/{quality_summary['agents_validated']} passed, "
+            f"{quality_summary['total_issues']} issue(s) found"
+        )
+        telemetry.log_event(
+            "quality_gates",
+            "validation_complete",
+            {
+                "agents_passed":    quality_summary["agents_passed"],
+                "agents_failed":    quality_summary["agents_failed"],
+                "total_issues":     quality_summary["total_issues"],
+                "overall_passed":   quality_summary["overall_passed"],
+            },
+        )
         
-        # Safe score extraction
+        # 5. Results — safe score extraction
         scorecard = context.get('evaluation_scorecard', {})
         score = "N/A"
         if hasattr(scorecard, "total_score"):
@@ -72,7 +79,7 @@ class RunManager:
             "run_id": run_id,
             "idea": idea,
             "plan": plan.dict() if hasattr(plan, 'dict') else plan,
-            "results": context,
+            "final_context": context,
             "log_path": f"logs/{run_id}.json"
         }
 

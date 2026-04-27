@@ -65,7 +65,7 @@ TAVILY_API_KEY=your_key_here
 DATABASE_URL=your_neon_db_url_here
 
 # Run the API
-uvicorn app.main:app --port 1234 --reload
+uvicorn app.main:app --port 8000 --reload
 ```
 
 ### 3. Set up the Frontend

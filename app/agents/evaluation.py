@@ -76,10 +76,10 @@ async def evaluation_agent(context):
     eval_input = {
         "idea": context.get("idea"),
         "market": context.get("market_analysis"),
-        "tech": context.get("tech_architecture"),
-        "finance": context.get("financial_plan"),
+        "tech": context.get("tech_analysis"),
+        "finance": context.get("financial_projections"),
         "synthesis": context.get("synthesis"),
-        "pitch": context.get("pitch")
+        "pitch": context.get("pitch_deck")
     }
 
     if telemetry:
@@ -102,5 +102,15 @@ async def evaluation_agent(context):
 
     # Ensure context receives a serializable dict, not a Pydantic object
     scorecard_dict = scorecard.dict() if hasattr(scorecard, "dict") else scorecard
+    
+    # 🛡️ LIST ENFORCEMENT: Ensure strengths/weaknesses are definitely lists
+    feedback = scorecard_dict.get("feedback", {})
+    for key in ["strengths", "weaknesses"]:
+        val = feedback.get(key)
+        if val and isinstance(val, str):
+            feedback[key] = [val]
+        elif not val:
+            feedback[key] = []
+            
     context["evaluation_scorecard"] = scorecard_dict
     return scorecard_dict

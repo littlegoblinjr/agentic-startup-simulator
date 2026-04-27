@@ -22,16 +22,17 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend code
 COPY app/ ./app/
-COPY .env* ./ 
 
 # Copy built frontend from Stage 1 into 'static' folder
 # (FastAPI main.py serves files from this directory)
 COPY --from=frontend-builder /app/frontend/dist ./static
 
-# Configure networking
-ENV PORT=7860
-EXPOSE 7860
+# Ensure logs directory exists at runtime
+RUN mkdir -p logs
 
-# Run the simulator
-# uvicorn app.main:app --host 0.0.0.0 --port 7860
-CMD ["python", "-m", "app.main"]
+# Configure networking — Render injects $PORT (default 10000)
+ENV PORT=10000
+EXPOSE 10000
+
+# Run with uvicorn directly — reads $PORT at container start
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]

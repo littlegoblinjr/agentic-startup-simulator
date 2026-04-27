@@ -23,17 +23,20 @@ async def build_dag(plan: Plan) -> DAG:
 
     dag = DAG()
 
-    for task_plan in plan.tasks:
+    # Create a set of valid task IDs for lookup
+    valid_task_ids = {t.task_id for t in plan.tasks}
 
+    for task_plan in plan.tasks:
         agent_func = AGENT_REGISTRY.get(task_plan.agent_type)
         
+        # 🛡️ HALLUCINATION GUARD: Filter out dependencies that aren't valid TASK IDs
+        clean_dependencies = [d for d in task_plan.dependencies if d in valid_task_ids]
 
         dag.add_task(
-
             Task(
                 task_id = task_plan.task_id,
                 func = agent_func,
-                dependencies = task_plan.dependencies
+                dependencies = clean_dependencies
             )
         )
     return dag

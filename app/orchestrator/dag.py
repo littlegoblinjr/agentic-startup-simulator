@@ -18,17 +18,20 @@ class DAG:
 
         visited = set()
         stack = []
-        
         def visit(task_id):
             if task_id in visited:
                 return
 
-            visited.add(task_id)
+            # Safety: In refinement mode, the planner might hallucinate virtual task IDs (like REFINEMENT_REQUEST).
+            # We ignore any dependencies that are not in the current plan's task list.
+            if task_id not in self.tasks:
+                print(f"DAG WARNING: Ignoring virtual or missing dependency '{task_id}'")
+                return
 
+            visited.add(task_id)
             task = self.tasks[task_id]
             
-            for dependency in task.dependency:
-
+            for dependency in task.dependencies:
                 visit(dependency)
 
             stack.append(task_id)

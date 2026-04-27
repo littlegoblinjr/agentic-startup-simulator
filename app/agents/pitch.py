@@ -32,17 +32,16 @@ Rules:
 
 
 class PitchSchema(BaseModel):
-
     startup_name: str
     problem: str
-    solution: str
+    solution_summary: str
     target_market: str
-    product: str
+    competitive_edge: str
     business_model: str
     technology: str
     go_to_market: str
     financial_projection: str
-    vision: str
+    vision_statement: str
 
 
 async def pitch_agent(context):
@@ -50,16 +49,16 @@ async def pitch_agent(context):
     telemetry = get_telemetry(run_id, idea=context.get("idea")) if run_id else None
 
     idea = context["idea"]
-    market_analysis = context["market_analysis"]
-    tech_architecture = context["tech_architecture"]
-    finance = context["financial_plan"]
+    market_analysis = context.get("market_analysis")
+    tech_analysis = context.get("tech_analysis")
+    finance = context.get("financial_projections")
     synthesis = context.get("synthesis", None)
 
     pitch_input = {
         "idea": idea,
         "market_analysis": market_analysis,
-        "tech_architecture": tech_architecture,
-        "financial_plan": finance,
+        "tech_analysis": tech_analysis,
+        "financial_projections": finance,
     }
     if synthesis:
         pitch_input["synthesis"] = synthesis
@@ -85,6 +84,6 @@ async def pitch_agent(context):
 
     # Ensure context receives a serializable dict, not a Pydantic object
     output_dict = output.dict() if hasattr(output, "dict") else output
-    context["pitch"] = output_dict
+    context["pitch_deck"] = output_dict
 
     return output_dict

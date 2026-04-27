@@ -97,7 +97,7 @@ Return a revised financial plan in EXACTLY this JSON schema:
   "pricing_strategy": "description",
   "cost_structure": "description",
   "break_even_estimate": "description",
-  "financial_projection": "description"
+  "financial_projections": "description"
 }}
 
 Rules:
@@ -149,6 +149,23 @@ class SynthesisSchema(BaseModel):
     recommendations: List[str]
 
 
+class RefinedFinanceSchema(BaseModel):
+    revenue_model: str
+    pricing_strategy: str
+    cost_structure: str
+    break_even_estimate: str
+    financial_projections: str
+
+
+class RefinedTechSchema(BaseModel):
+    architecture: str
+    tech_stack: List[str]
+    database: str
+    deployment: str
+    scalability: str
+    security: str
+
+
 def _classify_issues(issues: list) -> tuple:
     """
     Split consistency issues into finance-related and tech-related buckets.
@@ -191,21 +208,23 @@ async def _refine_finance(original_finance, market, issues: list, telemetry=None
         telemetry.log_event("synthesis_agent", "refine_finance_start", {"issues": issues})
     
     print("REFINEMENT LOOP: revising finance plan with feedback...")
-    response = await client.chat.completions.create(
-        model=DEFAULT_MODEL,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    usage = response.usage.model_dump() if hasattr(response, "usage") else None
-    output = response.choices[0].message.content
     try:
-        refined = parse_llm_json(output)
+        response = await client.beta.chat.completions.parse(
+            model=DEFAULT_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format=RefinedFinanceSchema
+        )
+        usage = response.usage.model_dump() if hasattr(response, "usage") else None
+        refined = response.choices[0].message.parsed
+        refined_dict = refined.dict() if hasattr(refined, "dict") else refined
+        
         if telemetry:
             telemetry.log_event("synthesis_agent", "refine_finance_success", {"refined_summary": "finance refined"}, usage=usage)
-        return refined
+        return refined_dict
     except Exception as e:
         print("REFINEMENT LOOP: finance refinement parse failed, keeping original:", e)
         if telemetry:
-            telemetry.log_event("synthesis_agent", "refine_finance_fail", {"raw": output})
+            telemetry.log_event("synthesis_agent", "refine_finance_fail", {"error": str(e)})
         return original_finance
 
 
@@ -220,21 +239,23 @@ async def _refine_tech(original_tech, market, issues: list, telemetry=None) -> d
         telemetry.log_event("synthesis_agent", "refine_tech_start", {"issues": issues})
 
     print("REFINEMENT LOOP: revising tech architecture with feedback...")
-    response = await client.chat.completions.create(
-        model=DEFAULT_MODEL,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    usage = response.usage.model_dump() if hasattr(response, "usage") else None
-    output = response.choices[0].message.content
     try:
-        refined = parse_llm_json(output)
+        response = await client.beta.chat.completions.parse(
+            model=DEFAULT_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            response_format=RefinedTechSchema
+        )
+        usage = response.usage.model_dump() if hasattr(response, "usage") else None
+        refined = response.choices[0].message.parsed
+        refined_dict = refined.dict() if hasattr(refined, "dict") else refined
+
         if telemetry:
             telemetry.log_event("synthesis_agent", "refine_tech_success", {"refined_summary": "tech refined"}, usage=usage)
-        return refined
+        return refined_dict
     except Exception as e:
         print("REFINEMENT LOOP: tech refinement parse failed, keeping original:", e)
         if telemetry:
-            telemetry.log_event("synthesis_agent", "refine_tech_fail", {"raw": output})
+            telemetry.log_event("synthesis_agent", "refine_tech_fail", {"error": str(e)})
         return original_tech
 
 
@@ -289,8 +310,8 @@ async def synthesis_agent(context):
     telemetry = get_telemetry(run_id, idea=context.get("idea")) if run_id else None
 
     market  = context.get("market_analysis")
-    finance = context.get("financial_plan")
-    tech    = context.get("tech_architecture")
+    finance = context.get("financial_projections")
+    tech    = context.get("tech_analysis")
 
     data = {
         "idea":    context["idea"],
@@ -320,8 +341,19 @@ async def synthesis_agent(context):
         # Ensure context receives a serializable dict, not a Pydantic object
         result_dict = result.dict() if hasattr(result, "dict") else result
         context["synthesis"] = result_dict
+        
+        # Map to frontend expected keys
+        context["growth_roadmap"] = {
+            "strategy": result_dict.get("refined_strategy"),
+            "recommendations": result_dict.get("recommendations")
+        }
+        context["risk_mitigation"] = {
+            "key_risks": result_dict.get("key_risks"),
+            "gaps": result_dict.get("gaps")
+        }
         return result_dict
 
+    skipped_agents = context.get("skipped_agents", [])
     issues = result.get("consistency_issues", [])
 
     # ── Refinement round (only when issues exist) ──────────────────────────
@@ -329,16 +361,31 @@ async def synthesis_agent(context):
         print(f"REFINEMENT LOOP: {len(issues)} issue(s) found → refining agents...")
         finance_issues, tech_issues = _classify_issues(issues)
 
+        # 🛑 ENFORCE IMMUTABILITY: Redirect issues to active agents
+        if "finance_agent" in skipped_agents and "tech_agent" not in skipped_agents:
+            print("REFINEMENT LOOP: Finance is immutable. Tech must resolve all issues.")
+            tech_issues.extend(finance_issues)
+            finance_issues = []
+            
+        elif "tech_agent" in skipped_agents and "finance_agent" not in skipped_agents:
+            print("REFINEMENT LOOP: Tech is immutable. Finance must resolve all issues.")
+            finance_issues.extend(tech_issues)
+            tech_issues = []
+            
+        elif "finance_agent" in skipped_agents and "tech_agent" in skipped_agents:
+            print("REFINEMENT LOOP: Both Tech and Finance are immutable. Skipping sub-refinement.")
+            finance_issues, tech_issues = [], []
+
         refined_finance = finance
         refined_tech    = tech
 
         if finance_issues:
             refined_finance = await _refine_finance(finance, market, finance_issues, telemetry=telemetry)
-            context["financial_plan"] = refined_finance
+            context["financial_projections"] = refined_finance
 
         if tech_issues:
             refined_tech = await _refine_tech(tech, market, tech_issues, telemetry=telemetry)
-            context["tech_architecture"] = refined_tech
+            context["tech_analysis"] = refined_tech
 
         # ── Round 2: re-synthesize ─────────────────────────────────────────
         print("REFINEMENT LOOP: re-running synthesis on refined outputs...")
@@ -360,4 +407,14 @@ async def synthesis_agent(context):
     # Ensure context receives a serializable dict, not a Pydantic object
     result_dict = result.dict() if hasattr(result, "dict") else result
     context["synthesis"] = result_dict
+    
+    # Map to frontend expected keys
+    context["growth_roadmap"] = {
+        "strategy": result_dict.get("refined_strategy"),
+        "recommendations": result_dict.get("recommendations")
+    }
+    context["risk_mitigation"] = {
+        "key_risks": result_dict.get("key_risks"),
+        "gaps": result_dict.get("gaps")
+    }
     return result_dict

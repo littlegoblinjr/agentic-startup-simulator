@@ -84,12 +84,14 @@ Generate 3 financial search queries (4-7 words). Return as JSON list.
 class QuerySchema(BaseModel):
     queries: List[str]
 
+from pydantic import BaseModel, Field
+
 class FinanceAnalysisSchema(BaseModel):
-    revenue_model: str
-    pricing_strategy: str
-    cost_structure: str
-    break_even_estimate: str
-    financial_projection: str
+    revenue_model: str = Field(description="A comprehensive plain text paragraph. Do NOT use nested JSON or dictionary formats.")
+    pricing_strategy: str = Field(description="A comprehensive plain text paragraph. Do NOT use nested JSON or dictionary formats.")
+    cost_structure: str = Field(description="A comprehensive plain text paragraph. Do NOT use nested JSON or dictionary formats.")
+    break_even_estimate: str = Field(description="A comprehensive plain text paragraph. Do NOT use nested JSON or dictionary formats.")
+    financial_projection: str = Field(description="A comprehensive plain text paragraph. Do NOT use nested JSON or dictionary formats.")
 
 async def finance_agent(context):
     run_id = context.get("run_id")
@@ -142,6 +144,12 @@ async def finance_agent(context):
             if telemetry: telemetry.log_event("finance_agent", f"round_{round_idx}_output", {"output": output[:100] + "..."}, usage=usage)
             
             data = parse_llm_json(output)
+            if isinstance(data, list):
+                merged = {}
+                for item in data:
+                    if isinstance(item, dict):
+                        merged.update(item)
+                data = merged
 
             if "tool_calls" in data:
                 results = []
@@ -171,7 +179,7 @@ async def finance_agent(context):
                 ]
                 continue
 
-            context["financial_plan"] = data
+            context["financial_projections"] = data
             if telemetry: telemetry.log_event("finance_agent", "success", {"plan": data})
             return data
 
@@ -194,5 +202,5 @@ async def finance_agent(context):
     
     # Ensure context receives a serializable dict, not a Pydantic object
     result_dict = result.dict() if hasattr(result, "dict") else result
-    context["financial_plan"] = result_dict
+    context["financial_projections"] = result_dict
     return result_dict

@@ -89,13 +89,15 @@ Generate 3 technical search queries (4-7 words) for architecture research. Retur
 class QuerySchema(BaseModel):
     queries: List[str]
 
+from pydantic import BaseModel, Field
+
 class TechArchitectureSchema(BaseModel):
-    architecture: str
+    architecture: str = Field(description="A comprehensive plain text paragraph. Do NOT use nested JSON or dictionary formats.")
     tech_stack: List[str]
-    database: str
-    deployment: str
-    scalability: str
-    security: str
+    database: str = Field(description="A comprehensive plain text paragraph. Do NOT use nested JSON or dictionary formats.")
+    deployment: str = Field(description="A comprehensive plain text paragraph. Do NOT use nested JSON or dictionary formats.")
+    scalability: str = Field(description="A comprehensive plain text paragraph. Do NOT use nested JSON or dictionary formats.")
+    security: str = Field(description="A comprehensive plain text paragraph. Do NOT use nested JSON or dictionary formats.")
 
 async def tech_agent(context):
     run_id = context.get("run_id")
@@ -148,6 +150,12 @@ async def tech_agent(context):
             if telemetry: telemetry.log_event("tech_agent", f"round_{round_idx}_output", {"output": output[:100] + "..."}, usage=usage)
             
             data = parse_llm_json(output)
+            if isinstance(data, list):
+                merged = {}
+                for item in data:
+                    if isinstance(item, dict):
+                        merged.update(item)
+                data = merged
 
             if "tool_calls" in data:
                 results = []
@@ -173,7 +181,7 @@ async def tech_agent(context):
                 ]
                 continue
 
-            context["tech_architecture"] = data
+            context["tech_analysis"] = data
             if telemetry: telemetry.log_event("tech_agent", "success", {"architecture": data})
             return data
 
@@ -196,5 +204,5 @@ async def tech_agent(context):
     
     # Ensure context receives a serializable dict, not a Pydantic object
     result_dict = result.dict() if hasattr(result, "dict") else result
-    context["tech_architecture"] = result_dict
+    context["tech_analysis"] = result_dict
     return result_dict

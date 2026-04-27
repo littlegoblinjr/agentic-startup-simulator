@@ -47,4 +47,7 @@ class RunSummary(BaseModel):
     idea: str
     status: str
     score: Optional[int] = None
+    parent_run_id: Optional[str] = None
+    iteration: int = 1
+    feedback: Optional[str] = None
     created_at: str
